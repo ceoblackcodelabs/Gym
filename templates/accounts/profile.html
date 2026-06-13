@@ -1,108 +1,835 @@
-{% extends 'accounts/base.html' %}
+{% extends "home/base.html" %}
+{% load static %}
 
-{% block title %}Dashboard - {{ block.super }}{% endblock %}
+{% block title %}My Profile — ATOMIC GYM{% endblock title %}
+
+{% block inject_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock inject_css %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body text-center">
-                {% if profile.avatar %}
-                    <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle mb-3" width="150" height="150">
-                {% else %}
-                    <div class="bg-secondary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
-                        <span class="text-white display-4">{{ user.username|make_list|first|upper }}</span>
-                    </div>
-                {% endif %}
-                <h3>{{ user.get_full_name|default:user.username }}</h3>
-                <p class="text-muted">{{ user.email }}</p>
 
-                <!-- Account Type Badge -->
-                <span class="badge {% if profile.is_creator %}bg-primary{% else %}bg-success{% endif %} mb-3">
-                    {{ profile.get_account_type_display }}
-                </span>
+<!-- ===== PROFILE BANNER ===== -->
+<div class="profile-banner">
+  <div class="profile-banner-line"></div>
+  <div class="profile-banner-bg-text">PROFILE</div>
 
-                <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary btn-sm">Edit Profile</a>
-            </div>
-        </div>
+  <div class="profile-card-wrap">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar" id="profileAvatarIcon">MR</div>
+      <div class="profile-online-dot"></div>
     </div>
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h4>Welcome, {{ user.username }}!</h4>
-            </div>
-            <div class="card-body">
-                <h5>Profile Information</h5>
-                <hr>
-                <p><strong>Username:</strong> {{ user.username }}</p>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Full Name:</strong> {{ user.get_full_name }}</p>
-                <p><strong>Account Type:</strong> {{ profile.get_account_type_display }}</p>
-                <p><strong>Member since:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
 
-                {% if profile.bio %}
-                    <p><strong>Bio:</strong> {{ profile.bio }}</p>
-                {% endif %}
-
-                {% if profile.location %}
-                    <p><strong>Location:</strong> {{ profile.location }}</p>
-                {% endif %}
-
-                {% if profile.birth_date %}
-                    <p><strong>Birth Date:</strong> {{ profile.birth_date }}</p>
-                {% endif %}
-
-                <!-- Creator Specific Information -->
-                {% if profile.is_creator %}
-                    <div class="mt-4">
-                        <h5>Creator Information</h5>
-                        <hr>
-                        {% if profile.website %}
-                            <p><strong>Website:</strong> <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a></p>
-                        {% endif %}
-
-                        {% if profile.social_instagram %}
-                            <p><strong>Instagram:</strong> @{{ profile.social_instagram }}</p>
-                        {% endif %}
-
-                        {% if profile.social_twitter %}
-                            <p><strong>Twitter:</strong> @{{ profile.social_twitter }}</p>
-                        {% endif %}
-
-                        {% if profile.social_youtube %}
-                            <p><strong>YouTube:</strong> <a href="{{ profile.social_youtube }}" target="_blank">{{ profile.social_youtube }}</a></p>
-                        {% endif %}
-
-                        <div class="alert alert-info mt-3">
-                            <strong>Creator Stats:</strong>
-                            <ul class="mb-0 mt-2">
-                                <li>Total Posts: {{ creator_specific_data.total_posts }}</li>
-                                <li>Total Followers: {{ creator_specific_data.total_followers }}</li>
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-
-                <!-- Fan Specific Information -->
-                {% if profile.is_fan %}
-                    <div class="mt-4">
-                        <h5>Fan Information</h5>
-                        <hr>
-                        {% if profile.favorite_genres %}
-                            <p><strong>Favorite Genres:</strong> {{ profile.favorite_genres }}</p>
-                        {% endif %}
-
-                        <div class="alert alert-info mt-3">
-                            <strong>Fan Stats:</strong>
-                            <ul class="mb-0 mt-2">
-                                <li>Following: {{ fan_specific_data.following_count }} creators</li>
-                                <li>Liked Content: {{ fan_specific_data.liked_content_count }} items</li>
-                            </ul>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+    <div class="profile-meta">
+      <div class="profile-plan-tag">⚡ Warrior Member</div>
+      <div class="profile-name">{{ request.user.first_name }} <span>{{ request.user.last_name }}</span></div>
+      <div class="profile-joined">Member since January 2023 &nbsp;·&nbsp; ID #ATM-4892</div>
     </div>
+
+    <div class="profile-quick-stats">
+      <div class="pqs">
+        <div class="pqs-num" id="pqs-workouts">0</div>
+        <div class="pqs-label">Workouts</div>
+      </div>
+      <div class="pqs">
+        <div class="pqs-num" id="pqs-streak">0</div>
+        <div class="pqs-label">Day Streak</div>
+      </div>
+      <div class="pqs">
+        <div class="pqs-num" id="pqs-lbs">0</div>
+        <div class="pqs-label">lbs Lost</div>
+      </div>
+      <div class="pqs">
+        <div class="pqs-num" id="pqs-pts">0</div>
+        <div class="pqs-label">Points</div>
+      </div>
+    </div>
+  </div>
 </div>
-{% endblock %}
+
+<!-- ===== TAB NAV ===== -->
+<div class="profile-tabs">
+  <button class="ptab active" data-tab="overview"><span class="ptab-icon">📊</span>Overview</button>
+  <button class="ptab" data-tab="workouts"><span class="ptab-icon">🏋️</span>Workouts</button>
+  <button class="ptab" data-tab="progress"><span class="ptab-icon">📈</span>Progress</button>
+  <button class="ptab" data-tab="membership"><span class="ptab-icon">🏅</span>Membership</button>
+  <button class="ptab" data-tab="settings"><span class="ptab-icon">⚙️</span>Settings</button>
+</div>
+
+<!-- ===== PROFILE BODY ===== */-->
+<div class="profile-body">
+
+  <!-- ======= OVERVIEW TAB ======= -->
+  <div class="tab-panel active" id="tab-overview">
+
+    <div class="pg-3">
+      <!-- Monthly goal ring -->
+      <div class="pcard">
+        <div class="pcard-title">Monthly Goal</div>
+        <div class="ring-wrap">
+          <div class="ring-container">
+            <svg class="ring-svg" width="120" height="120" viewBox="0 0 100 100">
+              <circle class="ring-track" cx="50" cy="50" r="45"/>
+              <circle class="ring-fill" id="ringGoal" cx="50" cy="50" r="45"/>
+            </svg>
+            <div class="ring-label" id="ringGoalLabel">0%</div>
+          </div>
+          <div class="ring-sublabel">18 / 24 Sessions</div>
+        </div>
+      </div>
+
+      <!-- Calories ring -->
+      <div class="pcard">
+        <div class="pcard-title">Calories Burned</div>
+        <div class="ring-wrap">
+          <div class="ring-container">
+            <svg class="ring-svg" width="120" height="120" viewBox="0 0 100 100">
+              <circle class="ring-track" cx="50" cy="50" r="45"/>
+              <circle class="ring-fill" id="ringCal" cx="50" cy="50" r="45"/>
+            </svg>
+            <div class="ring-label" id="ringCalLabel">0%</div>
+          </div>
+          <div class="ring-sublabel">11,280 / 15,000 kcal</div>
+        </div>
+      </div>
+
+      <!-- Active days ring -->
+      <div class="pcard">
+        <div class="pcard-title">Active Days</div>
+        <div class="ring-wrap">
+          <div class="ring-container">
+            <svg class="ring-svg" width="120" height="120" viewBox="0 0 100 100">
+              <circle class="ring-track" cx="50" cy="50" r="45"/>
+              <circle class="ring-fill" id="ringDays" cx="50" cy="50" r="45"/>
+            </svg>
+            <div class="ring-label" id="ringDaysLabel">0%</div>
+          </div>
+          <div class="ring-sublabel">20 / 26 Days</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weight chart + activity heatmap -->
+    <div class="pg-2-1">
+      <div class="pcard">
+        <div class="pcard-title">Weight Progress</div>
+        <div class="chart-controls">
+          <button class="chart-btn" data-range="1m">1M</button>
+          <button class="chart-btn active" data-range="3m">3M</button>
+          <button class="chart-btn" data-range="6m">6M</button>
+          <button class="chart-btn" data-range="1y">1Y</button>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="weightChart"></canvas>
+        </div>
+        <div class="weight-summary">
+          <div class="ws-item">
+            <div class="ws-num">215</div>
+            <div class="ws-label">Start (lbs)</div>
+          </div>
+          <div class="ws-item">
+            <div class="ws-num down">188</div>
+            <div class="ws-label">Current</div>
+          </div>
+          <div class="ws-item">
+            <div class="ws-num down">−27</div>
+            <div class="ws-label">Total Lost</div>
+          </div>
+          <div class="ws-item">
+            <div class="ws-num">175</div>
+            <div class="ws-label">Goal</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goals breakdown -->
+      <div class="pcard">
+        <div class="pcard-title">Weekly Goals</div>
+        <div style="margin-top:8px">
+          <div class="goal-bar-wrap">
+            <div class="goal-bar-header">
+              <span class="goal-bar-label">Workouts</span>
+              <span class="goal-bar-val">4 / 5</span>
+            </div>
+            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="80"></div></div>
+          </div>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar-header">
+              <span class="goal-bar-label">Cardio (mins)</span>
+              <span class="goal-bar-val">95 / 120</span>
+            </div>
+            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="79"></div></div>
+          </div>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar-header">
+              <span class="goal-bar-label">Strength Sets</span>
+              <span class="goal-bar-val">28 / 30</span>
+            </div>
+            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="93"></div></div>
+          </div>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar-header">
+              <span class="goal-bar-label">Calories Out</span>
+              <span class="goal-bar-val">2,640 / 3,000</span>
+            </div>
+            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="88"></div></div>
+          </div>
+          <div class="goal-bar-wrap">
+            <div class="goal-bar-header">
+              <span class="goal-bar-label">Water (L)</span>
+              <span class="goal-bar-val">2.4 / 3.0</span>
+            </div>
+            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="80"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity heatmap -->
+    <div class="pcard" style="margin-bottom:24px">
+      <div class="pcard-title">Activity Heatmap — Last 12 Weeks</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px">
+        <div class="heatmap-day-label">Mon</div>
+        <div class="heatmap-day-label">Tue</div>
+        <div class="heatmap-day-label">Wed</div>
+        <div class="heatmap-day-label">Thu</div>
+        <div class="heatmap-day-label">Fri</div>
+        <div class="heatmap-day-label">Sat</div>
+        <div class="heatmap-day-label">Sun</div>
+      </div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+        <span style="font-family:var(--font-cond);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(180,180,180,0.35)">Less</span>
+        <div style="width:14px;height:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)"></div>
+        <div style="width:14px;height:14px;background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.2)"></div>
+        <div style="width:14px;height:14px;background:rgba(0,200,83,0.35);border:1px solid rgba(0,200,83,0.4)"></div>
+        <div style="width:14px;height:14px;background:rgba(0,200,83,0.6);border:1px solid rgba(0,200,83,0.65)"></div>
+        <div style="width:14px;height:14px;background:var(--g);border:1px solid var(--g)"></div>
+        <span style="font-family:var(--font-cond);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(180,180,180,0.35)">More</span>
+      </div>
+    </div>
+
+  </div><!-- /overview -->
+
+
+  <!-- ======= WORKOUTS TAB ======= -->
+  <div class="tab-panel" id="tab-workouts">
+    <button class="add-workout-btn" onclick="openModal()">＋ Log Workout</button>
+
+    <div class="pg-2">
+      <div class="pcard">
+        <div class="pcard-title">Recent Workouts</div>
+        <div id="workoutList">
+          <!-- injected by JS -->
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-title">Personal Bests</div>
+        <table class="pb-table">
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Best</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Bench Press</td>
+              <td><span class="pb-val">225</span> lbs <span class="pb-new">NEW</span></td>
+              <td style="color:rgba(180,180,180,0.4);font-size:12px">Jun 8</td>
+            </tr>
+            <tr>
+              <td>Squat</td>
+              <td><span class="pb-val">315</span> lbs</td>
+              <td style="color:rgba(180,180,180,0.4);font-size:12px">May 22</td>
+            </tr>
+            <tr>
+              <td>Deadlift</td>
+              <td><span class="pb-val">385</span> lbs <span class="pb-new">NEW</span></td>
+              <td style="color:rgba(180,180,180,0.4);font-size:12px">Jun 11</td>
+            </tr>
+            <tr>
+              <td>Pull-ups</td>
+              <td><span class="pb-val">18</span> reps</td>
+              <td style="color:rgba(180,180,180,0.4);font-size:12px">May 30</td>
+            </tr>
+            <tr>
+              <td>5K Run</td>
+              <td><span class="pb-val">24:12</span></td>
+              <td style="color:rgba(180,180,180,0.4);font-size:12px">Jun 3</td>
+            </tr>
+            <tr>
+              <td>OHP</td>
+              <td><span class="pb-val">145</span> lbs</td>
+              <td style="color:rgba(180,180,180,0.4);font-size:12px">Jun 1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /workouts -->
+
+
+  <!-- ======= PROGRESS TAB ======= -->
+  <div class="tab-panel" id="tab-progress">
+    <div class="pg-1-2" style="margin-bottom:24px">
+      <div class="pcard">
+        <div class="pcard-title">Body Stats</div>
+        <ul class="membership-details">
+          <li><span class="md-label">Current Weight</span><span class="md-value green">188 lbs</span></li>
+          <li><span class="md-label">Start Weight</span><span class="md-value">215 lbs</span></li>
+          <li><span class="md-label">Goal Weight</span><span class="md-value">175 lbs</span></li>
+          <li><span class="md-label">BMI</span><span class="md-value green">24.1</span></li>
+          <li><span class="md-label">Body Fat</span><span class="md-value green">18.4%</span></li>
+          <li><span class="md-label">Muscle Mass</span><span class="md-value green">153 lbs</span></li>
+          <li><span class="md-label">Last Measured</span><span class="md-value">Jun 10, 2026</span></li>
+        </ul>
+      </div>
+      <div class="pcard">
+        <div class="pcard-title">Full Weight History</div>
+        <div class="chart-controls">
+          <button class="chart-btn" data-range2="1m">1M</button>
+          <button class="chart-btn" data-range2="3m">3M</button>
+          <button class="chart-btn active" data-range2="6m">6M</button>
+          <button class="chart-btn" data-range2="1y">1Y</button>
+        </div>
+        <div class="chart-wrap" style="height:300px">
+          <canvas id="weightChart2"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="pg-3">
+      <div class="pcard">
+        <div class="pcard-title">Strength Progress</div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="strengthChart"></canvas>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-title">Cardio Volume</div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="cardioChart"></canvas>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-title">Workout Split</div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="splitChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div><!-- /progress -->
+
+
+  <!-- ======= MEMBERSHIP TAB ======= -->
+  <div class="tab-panel" id="tab-membership">
+    <div class="pg-2">
+      <div class="pcard">
+        <div class="pcard-title">Current Plan</div>
+        <div class="membership-badge">
+          <div class="mbadge-icon">⚡</div>
+          <div>
+            <div class="mbadge-plan">WARRIOR</div>
+            <div class="mbadge-tier">Active Membership</div>
+          </div>
+        </div>
+        <ul class="membership-details">
+          <li><span class="md-label">Monthly Rate</span><span class="md-value green">$79 / mo</span></li>
+          <li><span class="md-label">Next Billing</span><span class="md-value">Jul 1, 2026</span></li>
+          <li><span class="md-label">Member Since</span><span class="md-value">Jan 15, 2023</span></li>
+          <li><span class="md-label">Status</span><span class="md-value green">✓ Active</span></li>
+          <li><span class="md-label">Payment</span><span class="md-value">Visa ···· 4892</span></li>
+          <li><span class="md-label">Auto-Renew</span><span class="md-value green">On</span></li>
+        </ul>
+        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+          <button class="btn-green">Upgrade to Elite</button>
+          <button style="font-family:var(--font-cond);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(180,180,180,0.4);background:none;border:1px solid rgba(255,255,255,0.08);padding:12px 20px;cursor:pointer;transition:all 0.3s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)" onmouseover="this.style.borderColor='var(--atom-red)';this.style.color='var(--atom-red)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(180,180,180,0.4)'">Cancel Plan</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div class="pcard">
+          <div class="pcard-title">Plan Benefits</div>
+          <ul class="membership-details">
+            <li><span class="md-label">Full Gym Access</span><span class="md-value green">✓</span></li>
+            <li><span class="md-label">Group Classes</span><span class="md-value green">Unlimited</span></li>
+            <li><span class="md-label">PT Sessions</span><span class="md-value green">2 / month</span></li>
+            <li><span class="md-label">Guest Passes</span><span class="md-value green">3 / month</span></li>
+            <li><span class="md-label">Sauna Access</span><span class="md-value green">✓</span></li>
+            <li><span class="md-label">Nutrition Bar</span><span class="md-value green">✓</span></li>
+            <li><span class="md-label">Locker Room</span><span class="md-value green">✓</span></li>
+          </ul>
+        </div>
+        <div class="pcard">
+          <div class="pcard-title">PT Sessions This Month</div>
+          <div style="display:flex;gap:12px;margin-top:4px">
+            <div style="flex:1;text-align:center;padding:16px;background:var(--g-dim);border:1px solid rgba(0,200,83,0.25)">
+              <div style="font-family:var(--font-display);font-size:36px;color:var(--g);line-height:1">1</div>
+              <div style="font-family:var(--font-cond);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(180,180,180,0.4);margin-top:4px">Used</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06)">
+              <div style="font-family:var(--font-display);font-size:36px;color:var(--atom-chrome);line-height:1">1</div>
+              <div style="font-family:var(--font-cond);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(180,180,180,0.4);margin-top:4px">Remaining</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /membership -->
+
+
+  <!-- ======= SETTINGS TAB ======= -->
+  <div class="tab-panel" id="tab-settings">
+    <div class="pg-2">
+      <div class="pcard">
+        <div class="pcard-title">Personal Info</div>
+        <div class="form-grid" style="grid-template-columns:1fr 1fr">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" value="Marcus"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" value="Reed"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" value="marcus@example.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" value="+1 (555) 410-2938"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" class="form-input" value="1992-03-14"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Goal Weight (lbs)</label>
+            <input type="number" class="form-input" value="175"/>
+          </div>
+        </div>
+        <button class="btn-green" style="margin-top:8px">Save Changes</button>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-title">Notifications</div>
+        <div class="settings-row">
+          <div><div class="settings-label">Workout Reminders</div><div class="settings-sub">Daily push at your preferred time</div></div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">PT Session Alerts</div><div class="settings-sub">24hr & 1hr before session</div></div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Weight Log Reminder</div><div class="settings-sub">Weekly weigh-in nudge</div></div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Promo Emails</div><div class="settings-sub">Deals and gym news</div></div>
+          <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Class Booking Confirms</div><div class="settings-sub">Email confirmation on booking</div></div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+    </div>
+  </div><!-- /settings -->
+
+</div><!-- /profile-body -->
+
+
+<!-- ===== ADD WORKOUT MODAL ===== -->
+<div class="modal-overlay" id="workoutModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">LOG A <span>WORKOUT</span></div>
+    <div class="modal-sub">Record today's session to keep your streak alive.</div>
+    <div class="form-grid" style="grid-template-columns:1fr 1fr">
+      <div class="form-group">
+        <label class="form-label">Workout Type</label>
+        <select class="form-select" id="wType">
+          <option>Strength</option>
+          <option>HIIT</option>
+          <option>Cardio</option>
+          <option>Combat Sports</option>
+          <option>Yoga / Mobility</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input type="date" class="form-input" id="wDate"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duration (mins)</label>
+        <input type="number" class="form-input" placeholder="60" id="wDuration"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Calories Burned</label>
+        <input type="number" class="form-input" placeholder="450" id="wCal"/>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" placeholder="What did you crush today?" id="wNotes" style="min-height:80px"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;align-items:center;margin-top:8px">
+      <button class="btn-green" onclick="saveWorkout()">Save Workout</button>
+      <button onclick="closeModal()" style="font-family:var(--font-cond);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(180,180,180,0.4);background:none;border:none;cursor:pointer">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// ===== DATA =====
+const weightData = {
+  '1m': {
+    labels: ['May 13','May 17','May 21','May 25','May 29','Jun 2','Jun 6','Jun 10','Jun 13'],
+    data:   [193,      192,      191,      190.5,    190,    189.5,  189,    188.5,  188]
+  },
+  '3m': {
+    labels: ['Mar 15','Apr 1','Apr 15','May 1','May 15','Jun 1','Jun 13'],
+    data:   [202,     200,    198,     196,    193,     190,    188]
+  },
+  '6m': {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+    data:   [212,  208,  205,  200,  194,  188]
+  },
+  '1y': {
+    labels: ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'],
+    data:   [215,  213,  211,  210,  209,  207,  212,  208,  205,  200,  194, 188]
+  }
+};
+
+const workouts = [
+  { day:'13', mon:'JUN', title:'Deadlift Day', sub:'Compound Pull — Lower', type:'Strength', mins:70, cal:520 },
+  { day:'11', mon:'JUN', title:'HIIT Circuit', sub:'Cardio Blast', type:'HIIT', mins:45, cal:480 },
+  { day:'10', mon:'JUN', title:'Bench & Rows', sub:'Push / Pull — Upper', type:'Strength', mins:65, cal:410 },
+  { day:'08', mon:'JUN', title:'5K + Core', sub:'Cardio & Abs', type:'Cardio', mins:55, cal:390 },
+  { day:'06', mon:'JUN', title:'Squat Session', sub:'Compound Push — Lower', type:'Strength', mins:75, cal:540 },
+  { day:'04', mon:'JUN', title:'Boxing Class', sub:'Combat Sports', type:'Combat', mins:60, cal:550 },
+  { day:'02', mon:'JUN', title:'Yoga Flow', sub:'Mobility & Recovery', type:'Yoga', mins:50, cal:180 },
+];
+
+// ===== QUICK STATS COUNTER =====
+function animNum(el, target, suffix='') {
+  let start = 0;
+  const dur = 1400;
+  const step = (ts, s0) => {
+    const p = Math.min((ts - s0) / dur, 1);
+    const e = 1 - Math.pow(1-p, 3);
+    el.textContent = Math.round(e * target) + suffix;
+    if (p < 1) requestAnimationFrame(t => step(t, s0));
+  };
+  requestAnimationFrame(t => step(t, t));
+}
+window.addEventListener('load', () => {
+  animNum(document.getElementById('pqs-workouts'), 142);
+  animNum(document.getElementById('pqs-streak'), 12);
+  animNum(document.getElementById('pqs-lbs'), 27);
+  animNum(document.getElementById('pqs-pts'), 3840);
+});
+
+// ===== RING ANIMATIONS =====
+function animRing(id, labelId, pct) {
+  const circ = 2 * Math.PI * 45;
+  const el = document.getElementById(id);
+  const lbl = document.getElementById(labelId);
+  const offset = circ * (1 - pct/100);
+  el.style.strokeDasharray = circ;
+  el.style.strokeDashoffset = circ;
+  setTimeout(() => {
+    el.style.strokeDashoffset = offset;
+    let cur = 0;
+    const dur = 1500;
+    const step = (ts, s0) => {
+      const p = Math.min((ts - s0) / dur, 1);
+      const e = 1 - Math.pow(1-p, 3);
+      lbl.textContent = Math.round(e * pct) + '%';
+      if (p < 1) requestAnimationFrame(t => step(t, s0));
+    };
+    requestAnimationFrame(t => step(t, t));
+  }, 400);
+}
+window.addEventListener('load', () => {
+  animRing('ringGoal',  'ringGoalLabel',  75);
+  animRing('ringCal',   'ringCalLabel',   75);
+  animRing('ringDays',  'ringDaysLabel',  77);
+});
+
+// ===== GOAL BARS =====
+window.addEventListener('load', () => {
+  document.querySelectorAll('.goal-bar-fill').forEach(el => {
+    setTimeout(() => { el.style.width = el.dataset.w + '%'; }, 300);
+  });
+});
+
+// ===== WEIGHT CHART FACTORY =====
+const chartGreen = '#00c853';
+const chartGreenAlpha = 'rgba(0,200,83,0.15)';
+
+function makeWeightChart(canvasId, range, dataSet) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return null;
+  const d = dataSet[range];
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: d.labels,
+      datasets: [{
+        label: 'Weight (lbs)',
+        data: d.data,
+        borderColor: chartGreen,
+        backgroundColor: chartGreenAlpha,
+        borderWidth: 2.5,
+        pointBackgroundColor: chartGreen,
+        pointBorderColor: '#0a0a0a',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        fill: true,
+        tension: 0.4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a1a',
+          borderColor: 'rgba(0,200,83,0.3)',
+          borderWidth: 1,
+          titleColor: '#00c853',
+          bodyColor: '#f0f0f0',
+          padding: 12,
+          callbacks: { label: ctx => ` ${ctx.parsed.y} lbs` }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: 'rgba(180,180,180,0.4)', font: { family: "'Barlow Condensed'", size: 11 } },
+          grid: { color: 'rgba(255,255,255,0.04)' }
+        },
+        y: {
+          ticks: { color: 'rgba(180,180,180,0.4)', font: { family: "'Barlow Condensed'", size: 11 }, callback: v => v + ' lbs' },
+          grid: { color: 'rgba(255,255,255,0.04)' }
+        }
+      }
+    }
+  });
+}
+
+let wChart1, wChart2;
+window.addEventListener('load', () => {
+  wChart1 = makeWeightChart('weightChart', '3m', weightData);
+  wChart2 = makeWeightChart('weightChart2', '6m', weightData);
+});
+
+// chart range buttons — overview
+document.querySelectorAll('[data-range]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-range]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const range = btn.dataset.range;
+    const d = weightData[range];
+    wChart1.data.labels = d.labels;
+    wChart1.data.datasets[0].data = d.data;
+    wChart1.update();
+  });
+});
+
+// chart range buttons — progress tab
+document.querySelectorAll('[data-range2]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-range2]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const range = btn.dataset.range2;
+    const d = weightData[range];
+    wChart2.data.labels = d.labels;
+    wChart2.data.datasets[0].data = d.data;
+    wChart2.update();
+  });
+});
+
+// ===== STRENGTH CHART =====
+window.addEventListener('load', () => {
+  const ctx = document.getElementById('strengthChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets: [{
+        label: 'Strength Sets',
+        data: [88, 95, 102, 110, 118, 126],
+        backgroundColor: 'rgba(0,200,83,0.3)',
+        borderColor: chartGreen,
+        borderWidth: 1.5,
+        borderRadius: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10 } },
+      scales: {
+        x: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ display:false } },
+        y: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ color:'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+
+  // Cardio chart
+  const ctx2 = document.getElementById('cardioChart');
+  if (!ctx2) return;
+  new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets: [{
+        label: 'Cardio mins',
+        data: [180, 210, 240, 270, 300, 310],
+        borderColor: chartGreen,
+        backgroundColor: chartGreenAlpha,
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: chartGreen,
+        pointBorderColor: '#0a0a0a',
+        pointBorderWidth: 2,
+        fill: true, tension: 0.4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display:false }, tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10 } },
+      scales: {
+        x: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ display:false } },
+        y: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ color:'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+
+  // Split donut
+  const ctx3 = document.getElementById('splitChart');
+  if (!ctx3) return;
+  new Chart(ctx3, {
+    type: 'doughnut',
+    data: {
+      labels: ['Strength','HIIT','Cardio','Combat','Yoga'],
+      datasets: [{
+        data: [42, 20, 18, 12, 8],
+        backgroundColor: ['#00c853','rgba(0,200,83,0.6)','rgba(0,200,83,0.4)','rgba(0,200,83,0.25)','rgba(0,200,83,0.1)'],
+        borderColor: '#1a1a1a',
+        borderWidth: 3,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: { position:'right', labels:{ color:'rgba(180,180,180,0.6)', font:{ family:"'Barlow Condensed'", size:11 }, boxWidth:12, padding:10 } },
+        tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10, callbacks:{ label: c => ` ${c.label}: ${c.parsed}%` } }
+      }
+    }
+  });
+});
+
+// ===== HEATMAP =====
+window.addEventListener('load', () => {
+  const grid = document.getElementById('heatmapGrid');
+  const levels = [0,0,0,1,0,2,0, 1,0,3,0,2,1,0, 0,2,0,1,4,0,1, 2,0,3,2,0,1,0,
+                  1,3,0,2,0,3,1, 0,2,4,0,3,2,0, 1,0,2,3,0,4,1, 2,3,0,1,2,0,3,
+                  0,4,2,0,3,1,0, 1,0,3,2,4,0,2, 3,2,0,4,1,3,0, 0,1,3,0,2,4,1];
+  levels.forEach(l => {
+    const cell = document.createElement('div');
+    cell.className = 'heatmap-cell' + (l > 0 ? ` l${l}` : '');
+    cell.title = l === 0 ? 'Rest day' : `Intensity: ${l}/4`;
+    grid.appendChild(cell);
+  });
+});
+
+// ===== RENDER WORKOUT LIST =====
+function renderWorkouts() {
+  const list = document.getElementById('workoutList');
+  list.innerHTML = workouts.map(w => `
+    <div class="workout-entry">
+      <div class="we-date">
+        <div class="we-day">${w.day}</div>
+        <div class="we-mon">${w.mon}</div>
+      </div>
+      <div>
+        <div class="we-title">${w.title}</div>
+        <div class="we-sub">${w.sub}</div>
+        <span class="workout-type-badge">${w.type}</span>
+      </div>
+      <div class="we-duration">
+        <div>${w.mins}</div>
+        <div class="we-dur-label">mins</div>
+      </div>
+      <div class="we-cal">
+        <div class="we-cal-num">${w.cal}</div>
+        <div class="we-cal-label">kcal</div>
+      </div>
+    </div>
+  `).join('');
+}
+renderWorkouts();
+
+// ===== TABS =====
+document.querySelectorAll('.ptab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    // re-init charts if needed
+    if (btn.dataset.tab === 'progress') {
+      setTimeout(() => {
+        if (!wChart2) wChart2 = makeWeightChart('weightChart2', '6m', weightData);
+      }, 100);
+    }
+  });
+});
+
+// ===== MODAL =====
+function openModal() {
+  document.getElementById('workoutModal').classList.add('open');
+  document.getElementById('wDate').value = new Date().toISOString().split('T')[0];
+}
+function closeModal() {
+  document.getElementById('workoutModal').classList.remove('open');
+}
+document.getElementById('workoutModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+function saveWorkout() {
+  const type = document.getElementById('wType').value;
+  const date = new Date(document.getElementById('wDate').value);
+  const day = String(date.getDate()).padStart(2,'0');
+  const mon = date.toLocaleString('en',{month:'short'}).toUpperCase();
+  const mins = parseInt(document.getElementById('wDuration').value) || 60;
+  const cal  = parseInt(document.getElementById('wCal').value) || 400;
+
+  workouts.unshift({ day, mon, title: type + ' Session', sub: 'Custom Workout', type, mins, cal });
+  renderWorkouts();
+  closeModal();
+
+  // flash success
+  const btn = document.querySelector('.add-workout-btn');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Workout Saved!';
+  btn.style.background = '#00c853';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+}
+</script>
+
+{% endblock content %}
