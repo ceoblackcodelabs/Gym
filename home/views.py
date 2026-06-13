@@ -28,23 +28,10 @@ class ContactAPIView(View):
         form = ContactForm(request.POST)
 
         if form.is_valid():
-            message = form.save()
-
-            # Optional: Send email notification
-            try:
-                send_mail(
-                    subject=f"New Contact Message: {message.subject}",
-                    message=f"From: {message.first_name} {message.last_name}\nEmail: {message.email}\nPhone: {message.phone}\n\nMessage:\n{message.message}",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[settings.ADMIN_EMAIL],
-                    fail_silently=True,
-                )
-            except:
-                pass
-
+            form.save()
             return JsonResponse({
                 'success': True,
-                'message': f'✓ Thanks {message.first_name}! We\'ll get back to you within 24 hours.'
+                'message': '✓ Message sent! We\'ll get back to you within 24 hours.'
             })
 
         return JsonResponse({
@@ -61,21 +48,7 @@ class MembershipRegistrationAPIView(View):
 
         if form.is_valid():
             user, membership = form.save()
-
-            # Log the user in automatically
             login(request, user)
-
-            # Optional: Send welcome email
-            try:
-                send_mail(
-                    subject="Welcome to Atomic Gym!",
-                    message=f"Hi {user.first_name},\n\nWelcome to Atomic Gym! Your {membership.get_membership_plan_display()} membership is now active.\n\nWe're excited to have you on board!\n\nBest regards,\nAtomic Gym Team",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=True,
-                )
-            except:
-                pass
 
             return JsonResponse({
                 'success': True,
@@ -90,7 +63,7 @@ class MembershipRegistrationAPIView(View):
 
 
 class CheckMemberExistsAPIView(View):
-    """Check if a user exists by email (for real-time validation)"""
+    """Check if a user exists by email"""
 
     def get(self, request):
         email = request.GET.get('email', '')

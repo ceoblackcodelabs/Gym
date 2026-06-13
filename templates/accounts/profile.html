@@ -16,31 +16,31 @@
 
   <div class="profile-card-wrap">
     <div class="profile-avatar-wrap">
-      <div class="profile-avatar" id="profileAvatarIcon">MR</div>
+      <div class="profile-avatar" id="profileAvatarIcon">{{ initials }}</div>
       <div class="profile-online-dot"></div>
     </div>
 
     <div class="profile-meta">
-      <div class="profile-plan-tag">⚡ Warrior Member</div>
-      <div class="profile-name">{{ request.user.first_name }} <span>{{ request.user.last_name }}</span></div>
-      <div class="profile-joined">Member since January 2023 &nbsp;·&nbsp; ID #ATM-4892</div>
+      <div class="profile-plan-tag">{{ plan_icon }} {{ plan_name }} Member</div>
+      <div class="profile-name">{{ user.first_name }} <span>{{ user.last_name }}</span></div>
+      <div class="profile-joined">Member since {{ member_since|date:"F Y" }} &nbsp;·&nbsp; ID #{{ member_id }}</div>
     </div>
 
     <div class="profile-quick-stats">
       <div class="pqs">
-        <div class="pqs-num" id="pqs-workouts">0</div>
+        <div class="pqs-num" id="pqs-workouts">{{ workout_count }}</div>
         <div class="pqs-label">Workouts</div>
       </div>
       <div class="pqs">
-        <div class="pqs-num" id="pqs-streak">0</div>
+        <div class="pqs-num" id="pqs-streak">{{ current_streak }}</div>
         <div class="pqs-label">Day Streak</div>
       </div>
       <div class="pqs">
-        <div class="pqs-num" id="pqs-lbs">0</div>
+        <div class="pqs-num" id="pqs-lbs">{{ weight_lost|floatformat:0 }}</div>
         <div class="pqs-label">lbs Lost</div>
       </div>
       <div class="pqs">
-        <div class="pqs-num" id="pqs-pts">0</div>
+        <div class="pqs-num" id="pqs-pts">{{ points_earned }}</div>
         <div class="pqs-label">Points</div>
       </div>
     </div>
@@ -56,7 +56,7 @@
   <button class="ptab" data-tab="settings"><span class="ptab-icon">⚙️</span>Settings</button>
 </div>
 
-<!-- ===== PROFILE BODY ===== */-->
+<!-- ===== PROFILE BODY ===== -->
 <div class="profile-body">
 
   <!-- ======= OVERVIEW TAB ======= -->
@@ -72,9 +72,9 @@
               <circle class="ring-track" cx="50" cy="50" r="45"/>
               <circle class="ring-fill" id="ringGoal" cx="50" cy="50" r="45"/>
             </svg>
-            <div class="ring-label" id="ringGoalLabel">0%</div>
+            <div class="ring-label" id="ringGoalLabel">{{ monthly_goal_progress.percentage }}%</div>
           </div>
-          <div class="ring-sublabel">18 / 24 Sessions</div>
+          <div class="ring-sublabel">{{ monthly_goal_progress.sessions_completed }} / {{ monthly_goal_progress.sessions_goal }} Sessions</div>
         </div>
       </div>
 
@@ -87,9 +87,9 @@
               <circle class="ring-track" cx="50" cy="50" r="45"/>
               <circle class="ring-fill" id="ringCal" cx="50" cy="50" r="45"/>
             </svg>
-            <div class="ring-label" id="ringCalLabel">0%</div>
+            <div class="ring-label" id="ringCalLabel">{{ monthly_goal_progress.calories_percentage }}%</div>
           </div>
-          <div class="ring-sublabel">11,280 / 15,000 kcal</div>
+          <div class="ring-sublabel">{{ monthly_goal_progress.calories_burned|floatformat:0 }} / {{ monthly_goal_progress.calories_goal|floatformat:0 }} kcal</div>
         </div>
       </div>
 
@@ -102,9 +102,9 @@
               <circle class="ring-track" cx="50" cy="50" r="45"/>
               <circle class="ring-fill" id="ringDays" cx="50" cy="50" r="45"/>
             </svg>
-            <div class="ring-label" id="ringDaysLabel">0%</div>
+            <div class="ring-label" id="ringDaysLabel">{{ monthly_goal_progress.active_days_percentage }}%</div>
           </div>
-          <div class="ring-sublabel">20 / 26 Days</div>
+          <div class="ring-sublabel">{{ monthly_goal_progress.active_days }} / {{ monthly_goal_progress.active_days_goal }} Days</div>
         </div>
       </div>
     </div>
@@ -124,19 +124,19 @@
         </div>
         <div class="weight-summary">
           <div class="ws-item">
-            <div class="ws-num">215</div>
+            <div class="ws-num">{{ start_weight|floatformat:0 }}</div>
             <div class="ws-label">Start (lbs)</div>
           </div>
           <div class="ws-item">
-            <div class="ws-num down">188</div>
+            <div class="ws-num down">{{ current_weight|floatformat:0 }}</div>
             <div class="ws-label">Current</div>
           </div>
           <div class="ws-item">
-            <div class="ws-num down">−27</div>
+            <div class="ws-num down">{{ weight_lost|floatformat:0 }}</div>
             <div class="ws-label">Total Lost</div>
           </div>
           <div class="ws-item">
-            <div class="ws-num">175</div>
+            <div class="ws-num">{{ goal_weight|floatformat:0 }}</div>
             <div class="ws-label">Goal</div>
           </div>
         </div>
@@ -146,41 +146,15 @@
       <div class="pcard">
         <div class="pcard-title">Weekly Goals</div>
         <div style="margin-top:8px">
+          {% for goal in weekly_goals %}
           <div class="goal-bar-wrap">
             <div class="goal-bar-header">
-              <span class="goal-bar-label">Workouts</span>
-              <span class="goal-bar-val">4 / 5</span>
+              <span class="goal-bar-label">{{ goal.label }}</span>
+              <span class="goal-bar-val">{{ goal.current }} / {{ goal.goal }}</span>
             </div>
-            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="80"></div></div>
+            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="{{ goal.percentage }}"></div></div>
           </div>
-          <div class="goal-bar-wrap">
-            <div class="goal-bar-header">
-              <span class="goal-bar-label">Cardio (mins)</span>
-              <span class="goal-bar-val">95 / 120</span>
-            </div>
-            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="79"></div></div>
-          </div>
-          <div class="goal-bar-wrap">
-            <div class="goal-bar-header">
-              <span class="goal-bar-label">Strength Sets</span>
-              <span class="goal-bar-val">28 / 30</span>
-            </div>
-            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="93"></div></div>
-          </div>
-          <div class="goal-bar-wrap">
-            <div class="goal-bar-header">
-              <span class="goal-bar-label">Calories Out</span>
-              <span class="goal-bar-val">2,640 / 3,000</span>
-            </div>
-            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="88"></div></div>
-          </div>
-          <div class="goal-bar-wrap">
-            <div class="goal-bar-header">
-              <span class="goal-bar-label">Water (L)</span>
-              <span class="goal-bar-val">2.4 / 3.0</span>
-            </div>
-            <div class="goal-bar-track"><div class="goal-bar-fill" data-w="80"></div></div>
-          </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -220,7 +194,33 @@
       <div class="pcard">
         <div class="pcard-title">Recent Workouts</div>
         <div id="workoutList">
-          <!-- injected by JS -->
+          {% for workout in recent_workouts %}
+          <div class="workout-entry">
+            <div class="we-date">
+              <div class="we-day">{{ workout.day }}</div>
+              <div class="we-mon">{{ workout.month }}</div>
+            </div>
+            <div>
+              <div class="we-title">{{ workout.title }}</div>
+              <div class="we-sub">{{ workout.subtitle }}</div>
+              <span class="workout-type-badge">{{ workout.type }}</span>
+            </div>
+            <div class="we-duration">
+              <div>{{ workout.duration }}</div>
+              <div class="we-dur-label">mins</div>
+            </div>
+            <div class="we-cal">
+              <div class="we-cal-num">{{ workout.calories }}</div>
+              <div class="we-cal-label">kcal</div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="workout-entry">
+            <div style="text-align:center; width:100%; padding:40px; color:rgba(255,255,255,0.4);">
+              No workouts logged yet. Click "Log Workout" to get started!
+            </div>
+          </div>
+          {% endfor %}
         </div>
       </div>
       <div class="pcard">
@@ -234,36 +234,19 @@
             </tr>
           </thead>
           <tbody>
+            {% for pb in personal_bests %}
             <tr>
-              <td>Bench Press</td>
-              <td><span class="pb-val">225</span> lbs <span class="pb-new">NEW</span></td>
-              <td style="color:rgba(180,180,180,0.4);font-size:12px">Jun 8</td>
+              <td>{{ pb.exercise }}</td>
+              <td><span class="pb-val">{{ pb.value }}</span> {{ pb.unit }} {% if pb.is_new %}<span class="pb-new">NEW</span>{% endif %}</td>
+              <td style="color:rgba(180,180,180,0.4);font-size:12px">{{ pb.date }}</td>
             </tr>
+            {% empty %}
             <tr>
-              <td>Squat</td>
-              <td><span class="pb-val">315</span> lbs</td>
-              <td style="color:rgba(180,180,180,0.4);font-size:12px">May 22</td>
+              <td colspan="3" style="text-align:center; color:rgba(255,255,255,0.4); padding:40px;">
+                No personal bests recorded yet. Start logging workouts!
+              </td>
             </tr>
-            <tr>
-              <td>Deadlift</td>
-              <td><span class="pb-val">385</span> lbs <span class="pb-new">NEW</span></td>
-              <td style="color:rgba(180,180,180,0.4);font-size:12px">Jun 11</td>
-            </tr>
-            <tr>
-              <td>Pull-ups</td>
-              <td><span class="pb-val">18</span> reps</td>
-              <td style="color:rgba(180,180,180,0.4);font-size:12px">May 30</td>
-            </tr>
-            <tr>
-              <td>5K Run</td>
-              <td><span class="pb-val">24:12</span></td>
-              <td style="color:rgba(180,180,180,0.4);font-size:12px">Jun 3</td>
-            </tr>
-            <tr>
-              <td>OHP</td>
-              <td><span class="pb-val">145</span> lbs</td>
-              <td style="color:rgba(180,180,180,0.4);font-size:12px">Jun 1</td>
-            </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -277,13 +260,13 @@
       <div class="pcard">
         <div class="pcard-title">Body Stats</div>
         <ul class="membership-details">
-          <li><span class="md-label">Current Weight</span><span class="md-value green">188 lbs</span></li>
-          <li><span class="md-label">Start Weight</span><span class="md-value">215 lbs</span></li>
-          <li><span class="md-label">Goal Weight</span><span class="md-value">175 lbs</span></li>
-          <li><span class="md-label">BMI</span><span class="md-value green">24.1</span></li>
-          <li><span class="md-label">Body Fat</span><span class="md-value green">18.4%</span></li>
-          <li><span class="md-label">Muscle Mass</span><span class="md-value green">153 lbs</span></li>
-          <li><span class="md-label">Last Measured</span><span class="md-value">Jun 10, 2026</span></li>
+          <li><span class="md-label">Current Weight</span><span class="md-value green">{{ current_weight|floatformat:1 }} lbs</span></li>
+          <li><span class="md-label">Start Weight</span><span class="md-value">{{ start_weight|floatformat:1 }} lbs</span></li>
+          <li><span class="md-label">Goal Weight</span><span class="md-value">{{ goal_weight|floatformat:1 }} lbs</span></li>
+          <li><span class="md-label">BMI</span><span class="md-value green">{{ bmi|floatformat:1 }}</span></li>
+          <li><span class="md-label">Body Fat</span><span class="md-value green">{{ body_fat|floatformat:1 }}%</span></li>
+          <li><span class="md-label">Muscle Mass</span><span class="md-value green">{{ muscle_mass|floatformat:0 }} lbs</span></li>
+          <li><span class="md-label">Last Measured</span><span class="md-value">{{ last_measured }}</span></li>
         </ul>
       </div>
       <div class="pcard">
@@ -329,22 +312,24 @@
       <div class="pcard">
         <div class="pcard-title">Current Plan</div>
         <div class="membership-badge">
-          <div class="mbadge-icon">⚡</div>
+          <div class="mbadge-icon">{{ plan_icon }}</div>
           <div>
-            <div class="mbadge-plan">WARRIOR</div>
+            <div class="mbadge-plan">{{ plan_name }}</div>
             <div class="mbadge-tier">Active Membership</div>
           </div>
         </div>
         <ul class="membership-details">
-          <li><span class="md-label">Monthly Rate</span><span class="md-value green">$79 / mo</span></li>
-          <li><span class="md-label">Next Billing</span><span class="md-value">Jul 1, 2026</span></li>
-          <li><span class="md-label">Member Since</span><span class="md-value">Jan 15, 2023</span></li>
-          <li><span class="md-label">Status</span><span class="md-value green">✓ Active</span></li>
-          <li><span class="md-label">Payment</span><span class="md-value">Visa ···· 4892</span></li>
-          <li><span class="md-label">Auto-Renew</span><span class="md-value green">On</span></li>
+          <li><span class="md-label">Monthly Rate</span><span class="md-value green">${{ plan_price }} / mo</span></li>
+          <li><span class="md-label">Next Billing</span><span class="md-value">{{ next_billing|date:"M d, Y" }}</span></li>
+          <li><span class="md-label">Member Since</span><span class="md-value">{{ member_since|date:"M d, Y" }}</span></li>
+          <li><span class="md-label">Status</span><span class="md-value green">✓ {{ membership_status }}</span></li>
+          <li><span class="md-label">Payment</span><span class="md-value">{{ payment_method }}</span></li>
+          <li><span class="md-label">Auto-Renew</span><span class="md-value green">{% if auto_renew %}On{% else %}Off{% endif %}</span></li>
         </ul>
         <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
-          <button class="btn-green">Upgrade to Elite</button>
+          {% if plan_name != "ELITE" %}
+          <button class="btn-green" onclick="upgradeMembership()">Upgrade to Elite</button>
+          {% endif %}
           <button style="font-family:var(--font-cond);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(180,180,180,0.4);background:none;border:1px solid rgba(255,255,255,0.08);padding:12px 20px;cursor:pointer;transition:all 0.3s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)" onmouseover="this.style.borderColor='var(--atom-red)';this.style.color='var(--atom-red)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='rgba(180,180,180,0.4)'">Cancel Plan</button>
         </div>
       </div>
@@ -353,24 +338,29 @@
         <div class="pcard">
           <div class="pcard-title">Plan Benefits</div>
           <ul class="membership-details">
-            <li><span class="md-label">Full Gym Access</span><span class="md-value green">✓</span></li>
-            <li><span class="md-label">Group Classes</span><span class="md-value green">Unlimited</span></li>
-            <li><span class="md-label">PT Sessions</span><span class="md-value green">2 / month</span></li>
-            <li><span class="md-label">Guest Passes</span><span class="md-value green">3 / month</span></li>
-            <li><span class="md-label">Sauna Access</span><span class="md-value green">✓</span></li>
-            <li><span class="md-label">Nutrition Bar</span><span class="md-value green">✓</span></li>
-            <li><span class="md-label">Locker Room</span><span class="md-value green">✓</span></li>
+            {% for benefit in benefits %}
+            <li>
+              <span class="md-label">{{ benefit.name }}</span>
+              <span class="md-value {% if benefit.included %}green{% endif %}">
+                {% if benefit.included %}
+                  {% if benefit.value %}{{ benefit.value }}{% else %}✓{% endif %}
+                {% else %}
+                  ✗
+                {% endif %}
+              </span>
+            </li>
+            {% endfor %}
           </ul>
         </div>
         <div class="pcard">
           <div class="pcard-title">PT Sessions This Month</div>
           <div style="display:flex;gap:12px;margin-top:4px">
             <div style="flex:1;text-align:center;padding:16px;background:var(--g-dim);border:1px solid rgba(0,200,83,0.25)">
-              <div style="font-family:var(--font-display);font-size:36px;color:var(--g);line-height:1">1</div>
+              <div style="font-family:var(--font-display);font-size:36px;color:var(--g);line-height:1">{{ pt_used }}</div>
               <div style="font-family:var(--font-cond);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(180,180,180,0.4);margin-top:4px">Used</div>
             </div>
             <div style="flex:1;text-align:center;padding:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06)">
-              <div style="font-family:var(--font-display);font-size:36px;color:var(--atom-chrome);line-height:1">1</div>
+              <div style="font-family:var(--font-display);font-size:36px;color:var(--atom-chrome);line-height:1">{{ pt_remaining }}</div>
               <div style="font-family:var(--font-cond);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(180,180,180,0.4);margin-top:4px">Remaining</div>
             </div>
           </div>
@@ -385,57 +375,61 @@
     <div class="pg-2">
       <div class="pcard">
         <div class="pcard-title">Personal Info</div>
-        <div class="form-grid" style="grid-template-columns:1fr 1fr">
-          <div class="form-group">
-            <label class="form-label">First Name</label>
-            <input type="text" class="form-input" value="Marcus"/>
+        <form id="profileForm">
+          {% csrf_token %}
+          <div class="form-grid" style="grid-template-columns:1fr 1fr">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" name="first_name" value="{{ user.first_name }}" id="profileFirstName"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" name="last_name" value="{{ user.last_name }}" id="profileLastName"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" name="email" value="{{ user.email }}" id="profileEmail"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-input" name="phone" value="{{ user_form_data.phone|default:'' }}" id="profilePhone"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-input" name="birth_date" value="{{ user_form_data.birth_date|default:'' }}" id="profileBirthDate"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Goal Weight (lbs)</label>
+              <input type="number" class="form-input" name="goal_weight" value="{{ user_form_data.goal_weight }}" id="profileGoalWeight"/>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Last Name</label>
-            <input type="text" class="form-input" value="Reed"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-input" value="marcus@example.com"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Phone</label>
-            <input type="tel" class="form-input" value="+1 (555) 410-2938"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Date of Birth</label>
-            <input type="date" class="form-input" value="1992-03-14"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Goal Weight (lbs)</label>
-            <input type="number" class="form-input" value="175"/>
-          </div>
-        </div>
-        <button class="btn-green" style="margin-top:8px">Save Changes</button>
+          <button type="button" class="btn-green" style="margin-top:8px" onclick="saveProfile()">Save Changes</button>
+        </form>
       </div>
 
       <div class="pcard">
         <div class="pcard-title">Notifications</div>
         <div class="settings-row">
           <div><div class="settings-label">Workout Reminders</div><div class="settings-sub">Daily push at your preferred time</div></div>
-          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          <label class="toggle"><input type="checkbox" {% if notifications.workout_reminders %}checked{% endif %} id="notifWorkout"><span class="toggle-slider"></span></label>
         </div>
         <div class="settings-row">
           <div><div class="settings-label">PT Session Alerts</div><div class="settings-sub">24hr & 1hr before session</div></div>
-          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          <label class="toggle"><input type="checkbox" {% if notifications.pt_alerts %}checked{% endif %} id="notifPT"><span class="toggle-slider"></span></label>
         </div>
         <div class="settings-row">
           <div><div class="settings-label">Weight Log Reminder</div><div class="settings-sub">Weekly weigh-in nudge</div></div>
-          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          <label class="toggle"><input type="checkbox" {% if notifications.weight_reminder %}checked{% endif %} id="notifWeight"><span class="toggle-slider"></span></label>
         </div>
         <div class="settings-row">
           <div><div class="settings-label">Promo Emails</div><div class="settings-sub">Deals and gym news</div></div>
-          <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+          <label class="toggle"><input type="checkbox" {% if notifications.promo_emails %}checked{% endif %} id="notifPromo"><span class="toggle-slider"></span></label>
         </div>
         <div class="settings-row">
           <div><div class="settings-label">Class Booking Confirms</div><div class="settings-sub">Email confirmation on booking</div></div>
-          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+          <label class="toggle"><input type="checkbox" {% if notifications.class_confirmations %}checked{% endif %} id="notifClass"><span class="toggle-slider"></span></label>
         </div>
+        <button type="button" class="btn-green" style="margin-top:16px" onclick="saveNotificationSettings()">Save Notification Settings</button>
       </div>
     </div>
   </div><!-- /settings -->
@@ -453,11 +447,11 @@
       <div class="form-group">
         <label class="form-label">Workout Type</label>
         <select class="form-select" id="wType">
-          <option>Strength</option>
-          <option>HIIT</option>
-          <option>Cardio</option>
-          <option>Combat Sports</option>
-          <option>Yoga / Mobility</option>
+          <option value="strength">Strength</option>
+          <option value="hiit">HIIT</option>
+          <option value="cardio">Cardio</option>
+          <option value="combat">Combat Sports</option>
+          <option value="yoga">Yoga / Mobility</option>
         </select>
       </div>
       <div class="form-group">
@@ -488,60 +482,27 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
-// ===== DATA =====
-const weightData = {
-  '1m': {
-    labels: ['May 13','May 17','May 21','May 25','May 29','Jun 2','Jun 6','Jun 10','Jun 13'],
-    data:   [193,      192,      191,      190.5,    190,    189.5,  189,    188.5,  188]
-  },
-  '3m': {
-    labels: ['Mar 15','Apr 1','Apr 15','May 1','May 15','Jun 1','Jun 13'],
-    data:   [202,     200,    198,     196,    193,     190,    188]
-  },
-  '6m': {
-    labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-    data:   [212,  208,  205,  200,  194,  188]
-  },
-  '1y': {
-    labels: ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'],
-    data:   [215,  213,  211,  210,  209,  207,  212,  208,  205,  200,  194, 188]
-  }
-};
+// ===== WEIGHT DATA FROM DJANGO =====
+const weightData = {{ weight_history|safe }};
 
-const workouts = [
-  { day:'13', mon:'JUN', title:'Deadlift Day', sub:'Compound Pull — Lower', type:'Strength', mins:70, cal:520 },
-  { day:'11', mon:'JUN', title:'HIIT Circuit', sub:'Cardio Blast', type:'HIIT', mins:45, cal:480 },
-  { day:'10', mon:'JUN', title:'Bench & Rows', sub:'Push / Pull — Upper', type:'Strength', mins:65, cal:410 },
-  { day:'08', mon:'JUN', title:'5K + Core', sub:'Cardio & Abs', type:'Cardio', mins:55, cal:390 },
-  { day:'06', mon:'JUN', title:'Squat Session', sub:'Compound Push — Lower', type:'Strength', mins:75, cal:540 },
-  { day:'04', mon:'JUN', title:'Boxing Class', sub:'Combat Sports', type:'Combat', mins:60, cal:550 },
-  { day:'02', mon:'JUN', title:'Yoga Flow', sub:'Mobility & Recovery', type:'Yoga', mins:50, cal:180 },
-];
+// ===== STRENGTH PROGRESS DATA =====
+const strengthData = {{ strength_progress|safe }};
 
-// ===== QUICK STATS COUNTER =====
-function animNum(el, target, suffix='') {
-  let start = 0;
-  const dur = 1400;
-  const step = (ts, s0) => {
-    const p = Math.min((ts - s0) / dur, 1);
-    const e = 1 - Math.pow(1-p, 3);
-    el.textContent = Math.round(e * target) + suffix;
-    if (p < 1) requestAnimationFrame(t => step(t, s0));
-  };
-  requestAnimationFrame(t => step(t, t));
-}
-window.addEventListener('load', () => {
-  animNum(document.getElementById('pqs-workouts'), 142);
-  animNum(document.getElementById('pqs-streak'), 12);
-  animNum(document.getElementById('pqs-lbs'), 27);
-  animNum(document.getElementById('pqs-pts'), 3840);
-});
+// ===== CARDIO PROGRESS DATA =====
+const cardioData = {{ cardio_progress|safe }};
+
+// ===== WORKOUT SPLIT DATA =====
+const splitData = {{ workout_split|safe }};
+
+// ===== HEATMAP DATA =====
+const heatmapData = {{ heatmap_data|safe }};
 
 // ===== RING ANIMATIONS =====
 function animRing(id, labelId, pct) {
   const circ = 2 * Math.PI * 45;
   const el = document.getElementById(id);
   const lbl = document.getElementById(labelId);
+  if (!el || !lbl) return;
   const offset = circ * (1 - pct/100);
   el.style.strokeDasharray = circ;
   el.style.strokeDashoffset = circ;
@@ -558,10 +519,11 @@ function animRing(id, labelId, pct) {
     requestAnimationFrame(t => step(t, t));
   }, 400);
 }
+
 window.addEventListener('load', () => {
-  animRing('ringGoal',  'ringGoalLabel',  75);
-  animRing('ringCal',   'ringCalLabel',   75);
-  animRing('ringDays',  'ringDaysLabel',  77);
+  animRing('ringGoal', 'ringGoalLabel', {{ monthly_goal_progress.percentage }});
+  animRing('ringCal', 'ringCalLabel', {{ monthly_goal_progress.calories_percentage }});
+  animRing('ringDays', 'ringDaysLabel', {{ monthly_goal_progress.active_days_percentage }});
 });
 
 // ===== GOAL BARS =====
@@ -571,7 +533,7 @@ window.addEventListener('load', () => {
   });
 });
 
-// ===== WEIGHT CHART FACTORY =====
+// ===== WEIGHT CHART =====
 const chartGreen = '#00c853';
 const chartGreenAlpha = 'rgba(0,200,83,0.15)';
 
@@ -579,6 +541,7 @@ function makeWeightChart(canvasId, range, dataSet) {
   const ctx = document.getElementById(canvasId);
   if (!ctx) return null;
   const d = dataSet[range];
+  if (!d) return null;
   return new Chart(ctx, {
     type: 'line',
     data: {
@@ -629,8 +592,10 @@ function makeWeightChart(canvasId, range, dataSet) {
 
 let wChart1, wChart2;
 window.addEventListener('load', () => {
-  wChart1 = makeWeightChart('weightChart', '3m', weightData);
-  wChart2 = makeWeightChart('weightChart2', '6m', weightData);
+  if (weightData && Object.keys(weightData).length > 0) {
+    wChart1 = makeWeightChart('weightChart', '3m', weightData);
+    wChart2 = makeWeightChart('weightChart2', '6m', weightData);
+  }
 });
 
 // chart range buttons — overview
@@ -640,9 +605,11 @@ document.querySelectorAll('[data-range]').forEach(btn => {
     btn.classList.add('active');
     const range = btn.dataset.range;
     const d = weightData[range];
-    wChart1.data.labels = d.labels;
-    wChart1.data.datasets[0].data = d.data;
-    wChart1.update();
+    if (wChart1 && d) {
+      wChart1.data.labels = d.labels;
+      wChart1.data.datasets[0].data = d.data;
+      wChart1.update();
+    }
   });
 });
 
@@ -653,135 +620,113 @@ document.querySelectorAll('[data-range2]').forEach(btn => {
     btn.classList.add('active');
     const range = btn.dataset.range2;
     const d = weightData[range];
-    wChart2.data.labels = d.labels;
-    wChart2.data.datasets[0].data = d.data;
-    wChart2.update();
+    if (wChart2 && d) {
+      wChart2.data.labels = d.labels;
+      wChart2.data.datasets[0].data = d.data;
+      wChart2.update();
+    }
   });
 });
 
 // ===== STRENGTH CHART =====
 window.addEventListener('load', () => {
   const ctx = document.getElementById('strengthChart');
-  if (!ctx) return;
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-      datasets: [{
-        label: 'Strength Sets',
-        data: [88, 95, 102, 110, 118, 126],
-        backgroundColor: 'rgba(0,200,83,0.3)',
-        borderColor: chartGreen,
-        borderWidth: 1.5,
-        borderRadius: 2,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10 } },
-      scales: {
-        x: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ display:false } },
-        y: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ color:'rgba(255,255,255,0.04)' } }
+  if (ctx && strengthData && strengthData.labels) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: strengthData.labels,
+        datasets: [{
+          label: 'Strength Sets',
+          data: strengthData.data,
+          backgroundColor: 'rgba(0,200,83,0.3)',
+          borderColor: chartGreen,
+          borderWidth: 1.5,
+          borderRadius: 2,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10 } },
+        scales: {
+          x: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ display:false } },
+          y: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ color:'rgba(255,255,255,0.04)' } }
+        }
       }
-    }
-  });
+    });
+  }
 
   // Cardio chart
   const ctx2 = document.getElementById('cardioChart');
-  if (!ctx2) return;
-  new Chart(ctx2, {
-    type: 'line',
-    data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-      datasets: [{
-        label: 'Cardio mins',
-        data: [180, 210, 240, 270, 300, 310],
-        borderColor: chartGreen,
-        backgroundColor: chartGreenAlpha,
-        borderWidth: 2,
-        pointRadius: 4,
-        pointBackgroundColor: chartGreen,
-        pointBorderColor: '#0a0a0a',
-        pointBorderWidth: 2,
-        fill: true, tension: 0.4,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display:false }, tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10 } },
-      scales: {
-        x: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ display:false } },
-        y: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ color:'rgba(255,255,255,0.04)' } }
+  if (ctx2 && cardioData && cardioData.labels) {
+    new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: cardioData.labels,
+        datasets: [{
+          label: 'Cardio mins',
+          data: cardioData.data,
+          borderColor: chartGreen,
+          backgroundColor: chartGreenAlpha,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointBackgroundColor: chartGreen,
+          pointBorderColor: '#0a0a0a',
+          pointBorderWidth: 2,
+          fill: true, tension: 0.4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display:false }, tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10 } },
+        scales: {
+          x: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ display:false } },
+          y: { ticks: { color:'rgba(180,180,180,0.4)', font:{ family:"'Barlow Condensed'", size:10 } }, grid:{ color:'rgba(255,255,255,0.04)' } }
+        }
       }
-    }
-  });
+    });
+  }
 
   // Split donut
   const ctx3 = document.getElementById('splitChart');
-  if (!ctx3) return;
-  new Chart(ctx3, {
-    type: 'doughnut',
-    data: {
-      labels: ['Strength','HIIT','Cardio','Combat','Yoga'],
-      datasets: [{
-        data: [42, 20, 18, 12, 8],
-        backgroundColor: ['#00c853','rgba(0,200,83,0.6)','rgba(0,200,83,0.4)','rgba(0,200,83,0.25)','rgba(0,200,83,0.1)'],
-        borderColor: '#1a1a1a',
-        borderWidth: 3,
-        hoverOffset: 6,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '62%',
-      plugins: {
-        legend: { position:'right', labels:{ color:'rgba(180,180,180,0.6)', font:{ family:"'Barlow Condensed'", size:11 }, boxWidth:12, padding:10 } },
-        tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10, callbacks:{ label: c => ` ${c.label}: ${c.parsed}%` } }
+  if (ctx3 && splitData && splitData.labels) {
+    new Chart(ctx3, {
+      type: 'doughnut',
+      data: {
+        labels: splitData.labels,
+        datasets: [{
+          data: splitData.data,
+          backgroundColor: ['#00c853','rgba(0,200,83,0.6)','rgba(0,200,83,0.4)','rgba(0,200,83,0.25)','rgba(0,200,83,0.1)'],
+          borderColor: '#1a1a1a',
+          borderWidth: 3,
+          hoverOffset: 6,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: { position:'right', labels:{ color:'rgba(180,180,180,0.6)', font:{ family:"'Barlow Condensed'", size:11 }, boxWidth:12, padding:10 } },
+          tooltip: { backgroundColor:'#1a1a1a', borderColor:'rgba(0,200,83,0.3)', borderWidth:1, titleColor:'#00c853', bodyColor:'#f0f0f0', padding:10, callbacks:{ label: c => ` ${c.label}: ${c.parsed}%` } }
+        }
       }
-    }
-  });
+    });
+  }
 });
 
 // ===== HEATMAP =====
 window.addEventListener('load', () => {
   const grid = document.getElementById('heatmapGrid');
-  const levels = [0,0,0,1,0,2,0, 1,0,3,0,2,1,0, 0,2,0,1,4,0,1, 2,0,3,2,0,1,0,
-                  1,3,0,2,0,3,1, 0,2,4,0,3,2,0, 1,0,2,3,0,4,1, 2,3,0,1,2,0,3,
-                  0,4,2,0,3,1,0, 1,0,3,2,4,0,2, 3,2,0,4,1,3,0, 0,1,3,0,2,4,1];
-  levels.forEach(l => {
-    const cell = document.createElement('div');
-    cell.className = 'heatmap-cell' + (l > 0 ? ` l${l}` : '');
-    cell.title = l === 0 ? 'Rest day' : `Intensity: ${l}/4`;
-    grid.appendChild(cell);
-  });
+  if (grid && heatmapData && heatmapData.length > 0) {
+    grid.innerHTML = '';
+    heatmapData.forEach(l => {
+      const cell = document.createElement('div');
+      cell.className = 'heatmap-cell' + (l > 0 ? ` l${l}` : '');
+      cell.title = l === 0 ? 'Rest day' : `Intensity: ${l}/4`;
+      grid.appendChild(cell);
+    });
+  }
 });
-
-// ===== RENDER WORKOUT LIST =====
-function renderWorkouts() {
-  const list = document.getElementById('workoutList');
-  list.innerHTML = workouts.map(w => `
-    <div class="workout-entry">
-      <div class="we-date">
-        <div class="we-day">${w.day}</div>
-        <div class="we-mon">${w.mon}</div>
-      </div>
-      <div>
-        <div class="we-title">${w.title}</div>
-        <div class="we-sub">${w.sub}</div>
-        <span class="workout-type-badge">${w.type}</span>
-      </div>
-      <div class="we-duration">
-        <div>${w.mins}</div>
-        <div class="we-dur-label">mins</div>
-      </div>
-      <div class="we-cal">
-        <div class="we-cal-num">${w.cal}</div>
-        <div class="we-cal-label">kcal</div>
-      </div>
-    </div>
-  `).join('');
-}
-renderWorkouts();
 
 // ===== TABS =====
 document.querySelectorAll('.ptab').forEach(btn => {
@@ -790,12 +735,6 @@ document.querySelectorAll('.ptab').forEach(btn => {
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    // re-init charts if needed
-    if (btn.dataset.tab === 'progress') {
-      setTimeout(() => {
-        if (!wChart2) wChart2 = makeWeightChart('weightChart2', '6m', weightData);
-      }, 100);
-    }
   });
 });
 
@@ -811,24 +750,105 @@ document.getElementById('workoutModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
 });
 
-function saveWorkout() {
-  const type = document.getElementById('wType').value;
-  const date = new Date(document.getElementById('wDate').value);
-  const day = String(date.getDate()).padStart(2,'0');
-  const mon = date.toLocaleString('en',{month:'short'}).toUpperCase();
-  const mins = parseInt(document.getElementById('wDuration').value) || 60;
-  const cal  = parseInt(document.getElementById('wCal').value) || 400;
+async function saveWorkout() {
+  const data = {
+    workout_type: document.getElementById('wType').value,
+    date: document.getElementById('wDate').value,
+    duration: parseInt(document.getElementById('wDuration').value) || 60,
+    calories: parseInt(document.getElementById('wCal').value) || 400,
+    notes: document.getElementById('wNotes').value,
+    title: document.getElementById('wType').options[document.getElementById('wType').selectedIndex].text + ' Session'
+  };
 
-  workouts.unshift({ day, mon, title: type + ' Session', sub: 'Custom Workout', type, mins, cal });
-  renderWorkouts();
-  closeModal();
+  try {
+    const response = await fetch("{% url 'accounts:api_log_workout' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify(data)
+    });
 
-  // flash success
-  const btn = document.querySelector('.add-workout-btn');
-  const orig = btn.textContent;
-  btn.textContent = '✓ Workout Saved!';
-  btn.style.background = '#00c853';
-  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+    const result = await response.json();
+
+    if (result.success) {
+      alert(result.message);
+      location.reload();
+    } else {
+      alert('Error: ' + result.message);
+    }
+  } catch (error) {
+    alert('Network error. Please try again.');
+  }
+}
+
+async function saveProfile() {
+  const data = {
+    first_name: document.getElementById('profileFirstName').value,
+    last_name: document.getElementById('profileLastName').value,
+    email: document.getElementById('profileEmail').value,
+    phone: document.getElementById('profilePhone').value,
+    birth_date: document.getElementById('profileBirthDate').value,
+    goal_weight: document.getElementById('profileGoalWeight').value
+  };
+
+  try {
+    const response = await fetch("{% url 'accounts:api_update_profile' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert(result.message);
+      location.reload();
+    } else {
+      alert('Error: ' + result.message);
+    }
+  } catch (error) {
+    alert('Network error. Please try again.');
+  }
+}
+
+async function saveNotificationSettings() {
+  const data = {
+    workout_reminders: document.getElementById('notifWorkout').checked,
+    pt_alerts: document.getElementById('notifPT').checked,
+    weight_reminder: document.getElementById('notifWeight').checked,
+    promo_emails: document.getElementById('notifPromo').checked,
+    class_confirmations: document.getElementById('notifClass').checked
+  };
+
+  try {
+    const response = await fetch("{% url 'accounts:api_update_notifications' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert(result.message);
+    } else {
+      alert('Error: ' + result.message);
+    }
+  } catch (error) {
+    alert('Network error. Please try again.');
+  }
+}
+
+function upgradeMembership() {
+  alert('Upgrade feature coming soon! Contact the front desk for Elite membership.');
 }
 </script>
 

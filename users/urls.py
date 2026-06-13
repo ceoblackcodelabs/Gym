@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from home.views import CheckMemberExistsAPIView
 
 app_name = 'accounts'
 
@@ -9,8 +10,12 @@ urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
-    path('profile/edit/', views.ProfileUpdateView.as_view(), name='profile_edit'),
-    path('profile/<int:user_id>/', views.ProfileDetailView.as_view(), name='profile_detail'),
+    path('profile/edit/', views.UpdateProfileView.as_view(), name='profile_edit'),
+    # path('profile/<int:user_id>/', views.ProfileDetailView.as_view(), name='profile_detail'),
+    path('api/check-user/', CheckMemberExistsAPIView.as_view(), name='api_check_user'),
+    path('api/update-profile/', views.UpdateProfileView.as_view(), name='api_update_profile'),
+    path('api/update-notifications/', views.UpdateNotificationSettingsView.as_view(), name='api_update_notifications'),
+    path('api/log-workout/', views.LogWorkoutView.as_view(), name='api_log_workout'),
 
     # Optional: Password reset views
     path('password-reset/',

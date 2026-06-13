@@ -1,11 +1,14 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from .models import ContactMessage, GymMembership
+from .models import ContactMessage, GymMembership, WorkoutLog, WeightLog, BodyMetrics
 
 User = get_user_model()
 
+
 class ContactForm(forms.ModelForm):
+    """Contact form for website inquiries"""
+
     class Meta:
         model = ContactMessage
         fields = ['first_name', 'last_name', 'email', 'phone', 'subject', 'message']
@@ -21,6 +24,7 @@ class ContactForm(forms.ModelForm):
 
 class MembershipRegistrationForm(forms.Form):
     """Form for registering a new member (creates User + Profile + GymMembership)"""
+
     first_name = forms.CharField(
         max_length=100,
         widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'John'})
@@ -37,14 +41,11 @@ class MembershipRegistrationForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': '+1 (555) 000-0000'})
     )
     date_of_birth = forms.DateField(
+        required=False,
         widget=forms.DateInput(attrs={'class': 'form-input', 'type': 'date'})
     )
     membership_plan = forms.ChoiceField(
         choices=GymMembership.MEMBERSHIP_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-    fitness_goal = forms.ChoiceField(
-        choices=GymMembership.GOAL_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'})
     )
     password = forms.CharField(
@@ -63,9 +64,10 @@ class MembershipRegistrationForm(forms.Form):
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
-        digits = ''.join(filter(str.isdigit, phone))
-        if len(digits) < 10:
-            raise forms.ValidationError('Please enter a valid phone number with at least 10 digits.')
+        if phone:
+            digits = ''.join(filter(str.isdigit, phone))
+            if len(digits) < 10:
+                raise forms.ValidationError('Please enter a valid phone number with at least 10 digits.')
         return phone
 
     def clean_password(self):
@@ -90,9 +92,8 @@ class MembershipRegistrationForm(forms.Form):
         """Create User, Profile, and GymMembership"""
         data = self.cleaned_data
 
-        # Create username from email (or generate)
+        # Create username from email
         username = data['email'].split('@')[0]
-        # Ensure unique username
         base_username = username
         counter = 1
         while User.objects.filter(username=username).exists():
@@ -105,23 +106,23 @@ class MembershipRegistrationForm(forms.Form):
             email=data['email'],
             password=data['password'],
             first_name=data['first_name'],
-            last_name=data['last_name']
+            last_name=data['last_name'],
+            phone=data.get('phone', '')
         )
 
         # Update Profile with additional info
         if hasattr(user, 'profile'):
             profile = user.profile
-            # Add phone to profile if the field exists
-            if hasattr(profile, 'phone'):
+            if data.get('phone'):
                 profile.phone = data['phone']
-            profile.birth_date = data['date_of_birth']
+            if data.get('date_of_birth'):
+                profile.birth_date = data['date_of_birth']
             profile.save()
 
         # Create Gym Membership
         membership = GymMembership.objects.create(
             user=user,
             membership_plan=data['membership_plan'],
-            fitness_goal=data['fitness_goal'],
             status='active'
         )
 

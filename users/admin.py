@@ -10,19 +10,8 @@ class ProfileInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'Profile'
     fieldsets = (
-        ('Account Type', {
-            'fields': ('account_type',)
-        }),
         ('Personal Info', {
-            'fields': ('bio', 'avatar', 'location', 'birth_date', 'phone')
-        }),
-        ('Social Links (Creators)', {
-            'fields': ('website', 'social_instagram', 'social_twitter', 'social_youtube'),
-            'classes': ('collapse',)
-        }),
-        ('Preferences (Fans)', {
-            'fields': ('favorite_genres',),
-            'classes': ('collapse',)
+            'fields': ('bio', 'avatar', 'location', 'birth_date', 'phone', 'goal_weight')
         }),
         ('Metadata', {
             'fields': ('created_at', 'updated_at'),
@@ -59,10 +48,6 @@ class UserAdmin(BaseUserAdmin):
 
     inlines = [ProfileInline]
 
-    def get_phone(self, obj):
-        return obj.phone or '-'
-    get_phone.short_description = 'Phone Number'
-
     actions = ['activate_users', 'deactivate_users', 'make_staff']
 
     def activate_users(self, request, queryset):
@@ -85,8 +70,7 @@ class UserAdmin(BaseUserAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     """Standalone Profile admin"""
 
-    list_display = ('user', 'account_type', 'location', 'is_creator_badge', 'created_at')
-    list_filter = ('account_type', 'created_at', 'updated_at')
+    list_display = ('user', 'location', 'goal_weight', 'created_at')
     search_fields = ('user__username', 'user__email', 'location', 'bio')
     readonly_fields = ('created_at', 'updated_at')
 
@@ -94,31 +78,11 @@ class ProfileAdmin(admin.ModelAdmin):
         ('User Information', {
             'fields': ('user',)
         }),
-        ('Account Type', {
-            'fields': ('account_type',)
-        }),
         ('Profile Details', {
-            'fields': ('bio', 'avatar', 'location', 'birth_date', 'phone')
-        }),
-        ('Creator Information', {
-            'fields': ('website', 'social_instagram', 'social_twitter', 'social_youtube'),
-            'classes': ('collapse',),
-            'description': 'These fields are only visible for Creator accounts'
-        }),
-        ('Fan Preferences', {
-            'fields': ('favorite_genres',),
-            'classes': ('collapse',),
-            'description': 'These fields are only visible for Fan accounts'
+            'fields': ('bio', 'avatar', 'location', 'birth_date', 'phone', 'goal_weight')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
-
-    def is_creator_badge(self, obj):
-        if obj.is_creator:
-            return '✓ Creator'
-        return 'Fan'
-    is_creator_badge.short_description = 'Role'
-    is_creator_badge.admin_order_field = 'account_type'
