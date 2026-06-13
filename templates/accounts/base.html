@@ -5,7 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Atomic Gym{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary: #39ff14;
+            --primary-dark: #2dd10f;
+            --primary-glow: rgba(57, 255, 20, 0.15);
+            --bg-dark: #0a0a0a;
+            --bg-card: rgba(20, 20, 20, 0.85);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --border: rgba(255, 255, 255, 0.08);
+            --error: #ff4444;
+            --success: #00e676;
+            --warning: #ffab00;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,247 +35,476 @@
 
         body {
             font-family: 'Barlow', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0d0d0d 100%);
+            background: var(--bg-dark);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow-x: hidden;
+            color: var(--text-primary);
         }
 
-        /* Animated background */
-        body::before {
-            content: '';
+        /* Animated mesh gradient background */
+        .bg-mesh {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(51, 255, 51, 0.05) 0%, transparent 50%);
-            pointer-events: none;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
         }
 
-        body::after {
+        .bg-mesh::before {
             content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(75, 255, 51, 0.02) 2px, rgba(133, 255, 51, 0.02) 4px);
-            pointer-events: none;
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(57, 255, 20, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(57, 255, 20, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(0, 200, 100, 0.03) 0%, transparent 60%);
+            animation: meshMove 20s ease-in-out infinite;
         }
 
+        .bg-mesh::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                rgba(57, 255, 20, 0.015) 2px,
+                rgba(57, 255, 20, 0.015) 4px
+            );
+        }
+
+        @keyframes meshMove {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-1deg); }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 15s infinite;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 12s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 15s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 10s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 18s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 14s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 16s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 11s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 13s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 1s; animation-duration: 17s; }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Main container */
         .auth-container {
             position: relative;
             z-index: 2;
             width: 100%;
-            max-width: 500px;
-            margin: 20px;
-            animation: fadeInUp 0.6s ease-out;
+            max-width: 480px;
+            margin: 40px 20px;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
+        /* Glass card */
         .auth-card {
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(20px);
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-radius: 24px;
             padding: 48px 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(68, 255, 51, 0.2);
-            transition: transform 0.3s ease;
+            border: 1px solid rgba(57, 255, 20, 0.15);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(57, 255, 20, 0.4), transparent);
+            opacity: 0.5;
         }
 
         .auth-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(109, 255, 51, 0.3);
+            transform: translateY(-4px);
+            box-shadow:
+                0 30px 60px -12px rgba(0, 0, 0, 0.7),
+                0 0 0 1px rgba(57, 255, 20, 0.2),
+                0 0 40px rgba(57, 255, 20, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            border-color: rgba(57, 255, 20, 0.25);
         }
 
+        /* Header */
         .auth-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 36px;
         }
 
         .auth-logo {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .auth-logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #55ff33, #52cc00);
-            border-radius: 12px;
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 700;
-            color: white;
+            color: #000;
             font-family: 'Bebas Neue', cursive;
-            box-shadow: 0 4px 15px rgba(109, 255, 51, 0.3);
+            box-shadow: 0 4px 20px rgba(57, 255, 20, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-logo-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .auth-logo-text {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             font-family: 'Bebas Neue', cursive;
             color: white;
         }
 
         .auth-logo-text span {
-            color: #63ff33;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(57, 255, 20, 0.3);
         }
 
         .auth-title {
             font-family: 'Bebas Neue', cursive;
-            font-size: 42px;
-            letter-spacing: 3px;
+            font-size: 44px;
+            letter-spacing: 4px;
             color: white;
-            margin-bottom: 12px;
-            text-shadow: 0 2px 10px rgba(99, 255, 51, 0.2);
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(57, 255, 20, 0.15);
+            animation: fadeIn 0.8s ease-out 0.3s both;
         }
 
         .auth-subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            animation: fadeIn 0.8s ease-out 0.4s both;
         }
 
+        /* Form */
         .auth-form {
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            animation: fadeIn 0.8s ease-out 0.5s both;
         }
 
         .form-label {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 13px;
+            color: var(--text-secondary);
+            font-size: 12px;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
+            margin-left: 4px;
         }
 
-        .input-icon {
+        .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
         }
 
-        .input-icon-emoji {
+        .input-icon {
             position: absolute;
             left: 16px;
             font-size: 18px;
             pointer-events: none;
+            z-index: 2;
+            opacity: 0.7;
+            transition: opacity 0.3s;
         }
 
-        .input-icon input {
+        .input-wrapper:focus-within .input-icon {
+            opacity: 1;
+        }
+
+        .input-wrapper input {
             width: 100%;
             padding: 14px 16px 14px 48px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
             border-radius: 12px;
             color: white;
             font-size: 15px;
-            transition: all 0.3s ease;
             font-family: 'Barlow', sans-serif;
-        }
-
-        .input-icon input:focus {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             outline: none;
-            border-color: #6dff33;
-            background: rgba(0, 0, 0, 0.6);
-            box-shadow: 0 0 0 3px rgba(92, 255, 51, 0.1);
         }
 
-        .input-icon input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 0 4px var(--primary-glow), 0 0 20px rgba(57, 255, 20, 0.1);
         }
 
+        .input-wrapper input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 300;
+        }
+
+        /* Password toggle */
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+            z-index: 2;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        .input-wrapper input.has-toggle {
+            padding-right: 44px;
+        }
+
+        /* Checkbox */
         .form-options {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: -8px;
+            margin-top: 4px;
+            animation: fadeIn 0.8s ease-out 0.6s both;
         }
 
-        .checkbox-label {
+        .checkbox-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 13px;
+            gap: 10px;
             cursor: pointer;
+            position: relative;
         }
 
-        .checkbox-label input {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: #44ff33;
+        .checkbox-wrapper input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .checkmark {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .checkbox-wrapper:hover .checkmark {
+            border-color: rgba(57, 255, 20, 0.4);
+        }
+
+        .checkbox-wrapper input:checked + .checkmark {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+        }
+
+        .checkbox-wrapper input:checked + .checkmark::after {
+            content: '✓';
+            color: #000;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .checkbox-label-text {
+            color: var(--text-secondary);
+            font-size: 13px;
+            user-select: none;
         }
 
         .forgot-link {
-            color: #44ff33;
+            color: var(--primary);
             font-size: 13px;
             text-decoration: none;
-            transition: color 0.3s;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .forgot-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: width 0.3s;
         }
 
         .forgot-link:hover {
-            color: #78ff66;
-            text-decoration: underline;
+            color: #66ff5c;
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
         }
 
+        .forgot-link:hover::after {
+            width: 100%;
+        }
+
+        /* Button */
         .auth-btn {
-            background: linear-gradient(135deg, #33ff5f, #00cc1bc2);
-            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #000;
             border: none;
-            padding: 14px;
+            padding: 15px;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             margin-top: 8px;
             font-family: 'Bebas Neue', cursive;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out 0.7s both;
+        }
+
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
         }
 
         .auth-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(51, 255, 112, 0.4);
+            box-shadow: 0 10px 30px -5px rgba(57, 255, 20, 0.4);
+        }
+
+        .auth-btn:hover::before {
+            transform: translateX(100%);
         }
 
         .auth-btn:active {
             transform: translateY(0);
         }
 
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Divider */
         .auth-divider {
             text-align: center;
             position: relative;
             margin: 8px 0;
+            animation: fadeIn 0.8s ease-out 0.8s both;
         }
 
         .auth-divider::before {
@@ -264,109 +514,322 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
         }
 
         .auth-divider span {
-            background: rgba(26, 26, 26, 0.95);
-            padding: 0 15px;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 12px;
+            background: var(--bg-card);
+            padding: 0 16px;
+            color: var(--text-muted);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
             position: relative;
             z-index: 1;
         }
 
+        /* Footer */
         .auth-footer {
             text-align: center;
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-secondary);
             font-size: 14px;
+            animation: fadeIn 0.8s ease-out 0.9s both;
         }
 
         .auth-link {
-            color: #33ff3d;
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .auth-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--primary);
+            transition: width 0.3s;
         }
 
         .auth-link:hover {
-            color: #66ff7f;
-            text-decoration: underline;
+            color: #66ff5c;
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
         }
 
+        .auth-link:hover::after {
+            width: 100%;
+        }
+
+        /* Errors */
         .form-error {
-            color: #ff3333;
+            color: var(--error);
             font-size: 12px;
             margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .form-error::before {
+            content: '⚠';
+            font-size: 14px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .nonfield-errors {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            color: var(--error);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nonfield-errors::before {
+            content: '✗';
+            font-size: 16px;
+            font-weight: 700;
         }
 
         /* Background stats */
         .auth-bg-stats {
             position: fixed;
-            bottom: 30px;
+            bottom: 40px;
             left: 0;
             right: 0;
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 60px;
             z-index: 1;
             pointer-events: none;
         }
 
         .bg-stat {
             text-align: center;
-            animation: fadeInUp 0.6s ease-out 0.3s both;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
         }
+
+        .bg-stat:nth-child(2) { animation-delay: 0.8s; }
+        .bg-stat:nth-child(3) { animation-delay: 1.0s; }
 
         .bg-stat-num {
             display: block;
             font-family: 'Bebas Neue', cursive;
-            font-size: 28px;
-            color: #33ff66;
+            font-size: 32px;
+            color: var(--primary);
             font-weight: 700;
-            text-shadow: 0 0 20px rgba(85, 255, 51, 0.3);
+            text-shadow: 0 0 30px rgba(57, 255, 20, 0.2);
+            line-height: 1;
+            margin-bottom: 4px;
         }
 
         .bg-stat-label {
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 1px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
             text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* Messages / Toasts */
+        .message-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 400px;
+        }
+
+        .message-toast {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(16px);
+            border-left: 3px solid;
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .message-toast.message-success {
+            border-left-color: var(--success);
+            background: rgba(0, 230, 118, 0.08);
+        }
+        .message-toast.message-error {
+            border-left-color: var(--error);
+            background: rgba(255, 68, 68, 0.08);
+        }
+        .message-toast.message-warning {
+            border-left-color: var(--warning);
+            background: rgba(255, 171, 0, 0.08);
+        }
+        .message-toast.message-info {
+            border-left-color: #2196f3;
+            background: rgba(33, 150, 243, 0.08);
+        }
+
+        .message-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .message-success .message-icon {
+            background: rgba(0, 230, 118, 0.15);
+            color: var(--success);
+        }
+        .message-error .message-icon {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--error);
+        }
+        .message-warning .message-icon {
+            background: rgba(255, 171, 0, 0.15);
+            color: var(--warning);
+        }
+        .message-info .message-icon {
+            background: rgba(33, 150, 243, 0.15);
+            color: #2196f3;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(120%) scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(120%) scale(0.9);
+                opacity: 0;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(0,0,0,0.3);
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Responsive */
         @media (max-width: 568px) {
+            .auth-container {
+                margin: 20px 16px;
+            }
+
             .auth-card {
-                padding: 32px 24px;
+                padding: 36px 24px;
             }
 
             .auth-title {
-                font-size: 32px;
+                font-size: 34px;
+                letter-spacing: 2px;
+            }
+
+            .auth-logo-text {
+                font-size: 22px;
             }
 
             .auth-bg-stats {
-                gap: 20px;
+                gap: 30px;
+                bottom: 20px;
             }
 
             .bg-stat-num {
-                font-size: 20px;
+                font-size: 24px;
             }
 
             .bg-stat-label {
                 font-size: 9px;
+            }
+
+            .message-container {
+                left: 16px;
+                right: 16px;
+                max-width: none;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <div class="bg-mesh"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
     {% if messages %}
-        <div class="message-container">
+        <div class="message-container" id="message-container">
             {% for message in messages %}
                 <div class="message-toast message-{{ message.tags }}">
                     <span class="message-icon">
                         {% if message.tags == 'success' %}✓
                         {% elif message.tags == 'error' %}✗
+                        {% elif message.tags == 'warning' %}⚠
                         {% else %}ℹ{% endif %}
                     </span>
                     <span class="message-text">{{ message }}</span>
@@ -378,89 +841,38 @@
     {% block content %}{% endblock %}
 
     <script>
-        // Auto-hide messages after 4 seconds
-        setTimeout(() => {
-            document.querySelectorAll('.message-toast').forEach(toast => {
-                toast.style.animation = 'slideOut 0.3s ease forwards';
-                setTimeout(() => toast.remove(), 300);
+        // Auto-hide messages
+        document.addEventListener('DOMContentLoaded', () => {
+            const toasts = document.querySelectorAll('.message-toast');
+            toasts.forEach((toast, index) => {
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                    setTimeout(() => toast.remove(), 400);
+                }, 4000 + (index * 200));
             });
-        }, 4000);
-
-        // Add floating animation to background stats
-        const stats = document.querySelectorAll('.bg-stat');
-        stats.forEach((stat, index) => {
-            stat.style.animation = `float 3s ease-in-out infinite ${index * 0.5}s`;
         });
 
-        // Add styles for messages
-        const style = document.createElement('style');
-        style.textContent = `
-            .message-container {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 10000;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
+        // Button loading state helper
+        window.setLoading = function(btn, loading = true) {
+            if (loading) {
+                btn.disabled = true;
+                btn.dataset.originalText = btn.innerHTML;
+                btn.innerHTML = btn.innerHTML + '<span class="spinner"></span>';
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = btn.dataset.originalText;
             }
+        };
 
-            .message-toast {
-                background: rgba(26, 26, 26, 0.95);
-                backdrop-filter: blur(12px);
-                border-left: 3px solid;
-                border-radius: 8px;
-                padding: 12px 16px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                animation: slideInRight 0.3s ease forwards;
-                color: white;
-                font-size: 14px;
-            }
-
-            .message-toast.message-success { border-left-color: #00c853; }
-            .message-toast.message-error { border-left-color: #ff3b30; }
-            .message-toast.message-info { border-left-color: #2196f3; }
-
-            .message-icon {
-                font-size: 18px;
-                font-weight: 700;
-            }
-
-            .message-success .message-icon { color: #00c853; }
-            .message-error .message-icon { color: #ff3b30; }
-            .message-info .message-icon { color: #2196f3; }
-
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
+        // Form submit loading state
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                const btn = form.querySelector('.auth-btn');
+                if (btn && !btn.disabled) {
+                    setLoading(btn, true);
                 }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-
-            @keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-
-            @keyframes float {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-10px); }
-            }
-        `;
-        document.head.appendChild(style);
+            });
+        });
     </script>
     {% block extra_js %}{% endblock %}
 </body>

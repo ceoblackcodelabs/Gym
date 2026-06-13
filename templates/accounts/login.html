@@ -11,38 +11,64 @@
                 <span class="auth-logo-text">ATOMIC<span>GYM</span></span>
             </div>
             <h1 class="auth-title">WELCOME BACK</h1>
-            <p class="auth-subtitle">Sign in to continue your journey</p>
+            <p class="auth-subtitle">Sign in to continue your fitness journey</p>
         </div>
 
-        <form method="post" class="auth-form">
+        <form method="post" class="auth-form" novalidate>
             {% csrf_token %}
 
+            {% if form.non_field_errors %}
+                <div class="nonfield-errors">
+                    {{ form.non_field_errors|first }}
+                </div>
+            {% endif %}
+
             <div class="form-group">
-                <label class="form-label">Username or Email</label>
-                <div class="input-icon">
-                    <span class="input-icon-emoji">👤</span>
-                    {{ form.username }}
+                <label class="form-label" for="id_username">Username or Email</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">👤</span>
+                    <input
+                        type="text"
+                        name="username"
+                        id="id_username"
+                        placeholder="Enter your username"
+                        value="{{ form.username.value|default:'' }}"
+                        class="{% if form.username.errors %}error{% endif %}"
+                        autocomplete="username"
+                        autofocus
+                    >
                 </div>
                 {% if form.username.errors %}
-                    <div class="form-error">{{ form.username.errors }}</div>
+                    <div class="form-error">{{ form.username.errors|first }}</div>
                 {% endif %}
             </div>
 
             <div class="form-group">
-                <label class="form-label">Password</label>
-                <div class="input-icon">
-                    <span class="input-icon-emoji">🔒</span>
-                    {{ form.password }}
+                <label class="form-label" for="id_password">Password</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        placeholder="Enter your password"
+                        class="has-toggle {% if form.password.errors %}error{% endif %}"
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePassword()" aria-label="Toggle password visibility">
+                        👁️
+                    </button>
                 </div>
                 {% if form.password.errors %}
-                    <div class="form-error">{{ form.password.errors }}</div>
+                    <div class="form-error">{{ form.password.errors|first }}</div>
                 {% endif %}
             </div>
 
             <div class="form-options">
-                <label class="checkbox-label">
-                    <input type="checkbox" name="remember">
-                    <span>Remember me</span>
+                <label class="checkbox-wrapper">
+                    <input type="checkbox" name="remember" id="id_remember">
+                    <span class="checkmark"></span>
+                    <span class="checkbox-label-text">Remember me</span>
                 </label>
                 <a href="{% url 'accounts:password_reset' %}" class="forgot-link">Forgot password?</a>
             </div>
@@ -74,4 +100,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    function togglePassword() {
+        const input = document.getElementById('id_password');
+        const toggle = document.querySelector('.password-toggle');
+        if (input.type === 'password') {
+            input.type = 'text';
+            toggle.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            toggle.textContent = '👁️';
+        }
+    }
+
+    // Add subtle parallax effect to card on mouse move
+    const card = document.querySelector('.auth-card');
+    document.addEventListener('mousemove', (e) => {
+        const x = (window.innerWidth / 2 - e.pageX) / 50;
+        const y = (window.innerHeight / 2 - e.pageY) / 50;
+        card.style.transform = `translateY(-4px) rotateX(${y}deg) rotateY(${x}deg)`;
+    });
+
+    // Reset on mouse leave
+    document.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(-4px) rotateX(0) rotateY(0)';
+    });
+</script>
 {% endblock %}
