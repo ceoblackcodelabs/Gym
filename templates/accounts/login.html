@@ -1,41 +1,76 @@
 {% extends 'accounts/base.html' %}
 
-{% block title %}Login - {{ block.super }}{% endblock %}
+{% block title %}Login - Atomic Gym{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center">Login</h3>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <div class="auth-logo-icon">A</div>
+                <span class="auth-logo-text">ATOMIC<span>GYM</span></span>
             </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
+            <h1 class="auth-title">WELCOME BACK</h1>
+            <p class="auth-subtitle">Sign in to continue your journey</p>
+        </div>
 
-                    {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">
-                                {{ field.label }}
-                            </label>
-                            {{ field }}
-                            {% if field.errors %}
-                                <div class="alert alert-danger mt-1">
-                                    {{ field.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
+        <form method="post" class="auth-form">
+            {% csrf_token %}
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </div>
-                </form>
-                <div class="text-center mt-3">
-                    <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
-                    <p><a href="{% url 'accounts:password_reset' %}">Forgot password?</a></p>
+            <div class="form-group">
+                <label class="form-label">Username or Email</label>
+                <div class="input-icon">
+                    <span class="input-icon-emoji">👤</span>
+                    {{ form.username }}
                 </div>
+                {% if form.username.errors %}
+                    <div class="form-error">{{ form.username.errors }}</div>
+                {% endif %}
             </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <div class="input-icon">
+                    <span class="input-icon-emoji">🔒</span>
+                    {{ form.password }}
+                </div>
+                {% if form.password.errors %}
+                    <div class="form-error">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="remember">
+                    <span>Remember me</span>
+                </label>
+                <a href="{% url 'accounts:password_reset' %}" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="auth-btn">LOGIN</button>
+
+            <div class="auth-divider">
+                <span>OR</span>
+            </div>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="{% url 'accounts:register' %}" class="auth-link">Join Atomic Gym</a></p>
+            </div>
+        </form>
+    </div>
+
+    <div class="auth-bg-stats">
+        <div class="bg-stat">
+            <span class="bg-stat-num">12+</span>
+            <span class="bg-stat-label">Years Strong</span>
+        </div>
+        <div class="bg-stat">
+            <span class="bg-stat-num">4K</span>
+            <span class="bg-stat-label">Active Members</span>
+        </div>
+        <div class="bg-stat">
+            <span class="bg-stat-num">98%</span>
+            <span class="bg-stat-label">Satisfaction</span>
         </div>
     </div>
 </div>

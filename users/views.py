@@ -40,7 +40,7 @@ class RegisterView(FormView):
 class LoginView(FormView):
     template_name = 'accounts/login.html'
     form_class = CustomAuthenticationForm
-    success_url = reverse_lazy('accounts:profile')
+    success_url = reverse_lazy('home:home')
 
     def form_valid(self, form):
         # Get the username and password from the form
