@@ -1,0 +1,536 @@
+<!-- Updated index.html with forms and message system -->
+<!-- INDEX.HTML -->
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block title %}ATOMIC GYM{% endblock title %}
+
+{% block inject_css %}
+<link rel="stylesheet" href="{% static 'css/messages.css' %}">
+{% endblock inject_css %}
+
+{% block content %}
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-overlay2"></div>
+  <div class="hero-accent-line"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Where Champions Are Made</div>
+    <h1 class="hero-title">
+      FORGE<br>
+      <span class="line2">YOUR</span>
+      <span class="line3">POWER</span>
+    </h1>
+    <p class="hero-sub">
+      At Atomic Gym, we don't just build bodies — we engineer legends.
+      World-class equipment, expert coaches, and a community built on pure grit.
+    </p>
+    <div class="hero-buttons">
+      <a href="#contact" class="btn-primary">Start Free Trial</a>
+      <a href="#services" class="btn-secondary">Explore Services</a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">12+</span>
+      <span class="stat-label">Years Strong</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">4K</span>
+      <span class="stat-label">Active Members</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">35</span>
+      <span class="stat-label">Expert Coaches</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">98%</span>
+      <span class="stat-label">Satisfaction</span>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-image-wrap reveal-left">
+      <div class="about-image-frame">
+        <img src="{% static 'images/about.jpg' %}" alt="Atomic Gym Training Floor"
+             onerror="this.style.background='linear-gradient(135deg,#1a1a1a 0%,#2a0808 100%)'; this.style.minHeight='500px'"/>
+      </div>
+      <div class="about-badge">
+        <span class="about-badge-num">12+</span>
+        <span class="about-badge-text">YEARS OF EXCELLENCE</span>
+      </div>
+    </div>
+
+    <div class="about-text reveal-right">
+      <div class="section-tag">Who We Are</div>
+      <h2 class="section-title">NOT JUST A<br><span>GYM.</span><br>A FORGE.</h2>
+      <p class="about-body">
+        Atomic Gym was born from a singular obsession — to create the ultimate performance facility.
+        Our 25,000 sq ft space is packed with premium equipment, recovery suites, and coaches who've
+        trained world-class athletes. We believe every rep, every drop of sweat, is an act of
+        transformation. This is where ordinary people become extraordinary.
+      </p>
+
+      <div class="about-features">
+        <div class="about-feature">Premium Equipment</div>
+        <div class="about-feature">Expert Coaching</div>
+        <div class="about-feature">24/7 Access</div>
+        <div class="about-feature">Nutrition Bar</div>
+        <div class="about-feature">Sauna & Recovery</div>
+        <div class="about-feature">Free Parking</div>
+      </div>
+
+      <a href="#services" class="btn-primary">Explore Our Facility</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section id="services">
+  <div class="services-header">
+    <div class="reveal">
+      <div class="section-tag">What We Offer</div>
+      <h2 class="section-title">OUR<br><span>SERVICES</span></h2>
+    </div>
+    <a href="#contact" class="btn-secondary reveal" style="transition-delay:0.2s">Get Started →</a>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card reveal" style="transition-delay:0s">
+      <div class="service-num">01</div>
+      <div class="service-icon">🏋️</div>
+      <div class="service-title">STRENGTH TRAINING</div>
+      <p class="service-desc">Heavy iron, Olympic platforms, and powerlifting rigs. Forge raw strength with equipment trusted by competitive lifters.</p>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.1s">
+      <div class="service-num">02</div>
+      <div class="service-icon">⚡</div>
+      <div class="service-title">HIIT & CARDIO</div>
+      <p class="service-desc">High-intensity interval training zones with Assault bikes, sleds, and rowers designed to incinerate fat and build endurance.</p>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.2s">
+      <div class="service-num">03</div>
+      <div class="service-icon">🥊</div>
+      <div class="service-title">COMBAT SPORTS</div>
+      <p class="service-desc">Boxing ring, MMA cage, and striking bags. Train like a fighter with our certified combat sports coaches.</p>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.1s">
+      <div class="service-num">04</div>
+      <div class="service-icon">🧠</div>
+      <div class="service-title">PERSONAL TRAINING</div>
+      <p class="service-desc">1-on-1 sessions with certified trainers who build custom programs around your exact goals and biology.</p>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.2s">
+      <div class="service-num">05</div>
+      <div class="service-icon">🧘</div>
+      <div class="service-title">YOGA & MOBILITY</div>
+      <p class="service-desc">Dedicated studio for yoga, stretching, and mobility work. Recovery is as important as the grind.</p>
+    </div>
+    <div class="service-card reveal" style="transition-delay:0.3s">
+      <div class="service-num">06</div>
+      <div class="service-icon">🥗</div>
+      <div class="service-title">NUTRITION COACHING</div>
+      <p class="service-desc">In-house dieticians, body composition analysis, and a full supplement & nutrition bar to fuel your performance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section id="pricing">
+  <div class="pricing-header reveal">
+    <div class="section-tag" style="justify-content:center">Membership Plans</div>
+    <h2 class="section-title">CHOOSE YOUR<br><span>WEAPON</span></h2>
+    <p class="pricing-sub">No contracts. Cancel anytime. Pure results.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card reveal" style="transition-delay:0s">
+      <div class="pricing-plan">Rookie</div>
+      <div class="pricing-price"><sup>$</sup>39</div>
+      <div class="pricing-period">/ PER MONTH</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li>Full Gym Floor Access</li>
+        <li>Cardio Equipment</li>
+        <li>Locker Room Access</li>
+        <li>1 Guest Pass / Month</li>
+        <li class="missing">Group Classes</li>
+        <li class="missing">Personal Training</li>
+        <li class="missing">Sauna & Recovery</li>
+      </ul>
+      <button class="btn-plan btn-plan-outline" onclick="showReg()">Get Started</button>
+    </div>
+
+    <div class="pricing-card featured reveal" style="transition-delay:0.15s">
+      <div class="pricing-badge">Most Popular</div>
+      <div class="pricing-plan">Warrior</div>
+      <div class="pricing-price"><sup>$</sup>79</div>
+      <div class="pricing-period">/ PER MONTH</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li>Full Gym Floor Access</li>
+        <li>Cardio Equipment</li>
+        <li>Locker Room & Sauna</li>
+        <li>3 Guest Passes / Month</li>
+        <li>Unlimited Group Classes</li>
+        <li>2 PT Sessions / Month</li>
+        <li class="missing">Nutrition Coaching</li>
+      </ul>
+      <button class="btn-plan" onclick="showReg()">Join Now</button>
+    </div>
+
+    <div class="pricing-card reveal" style="transition-delay:0.3s">
+      <div class="pricing-plan">Elite</div>
+      <div class="pricing-price"><sup>$</sup>129</div>
+      <div class="pricing-period">/ PER MONTH</div>
+      <div class="pricing-divider"></div>
+      <ul class="pricing-features">
+        <li>Full Gym Floor Access</li>
+        <li>All Equipment & Classes</li>
+        <li>Sauna, Ice Bath & Recovery</li>
+        <li>Unlimited Guest Passes</li>
+        <li>Unlimited PT Sessions</li>
+        <li>Full Nutrition Program</li>
+        <li>Priority Booking</li>
+      </ul>
+      <button class="btn-plan btn-plan-outline" onclick="showReg()">Go Elite</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT / REGISTRATION ===== -->
+<section id="contact">
+  <div class="reveal" style="text-align:center; margin-bottom: 10px">
+    <div class="section-tag" style="justify-content:center">Reach Out</div>
+    <h2 class="section-title">CONTACT <span>US</span></h2>
+  </div>
+
+  <div class="flip-container">
+    <div class="flip-inner" id="flipCard">
+
+      <!-- CONTACT FRONT -->
+      <div class="flip-front">
+        <h3 class="contact-form-title">SEND A <span>MESSAGE</span></h3>
+        <p class="form-subtitle">Have questions? We'll respond within 24 hours.</p>
+        <form id="contactForm">
+          {% csrf_token %}
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              {{ contact_form.first_name }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              {{ contact_form.last_name }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              {{ contact_form.email }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              {{ contact_form.phone }}
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Subject</label>
+              {{ contact_form.subject }}
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Message</label>
+              {{ contact_form.message }}
+            </div>
+          </div>
+          {% if request.user.is_authenticated %}
+          <div class="flip-btn-wrap">
+            <button type="button" class="btn-primary" id="submitContact">Send Message</button>
+            </button>
+          </div>
+          {% else %}
+          <div class="flip-btn-wrap">
+            <button type="button" class="btn-primary" id="submitContact">Send Message</button>
+            <button type="button" class="flip-trigger" onclick="flipCard()">
+              <div class="flip-trigger-icon">↩</div>
+              Become a Member Instead
+            </button>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+
+      {% if request.user.is_authenticated %}
+      {% else %}
+      <!-- REGISTRATION BACK -->
+      <div class="flip-back">
+        <h3 class="reg-form-title">MEMBER <span>REGISTRATION</span></h3>
+        <p class="form-subtitle">Join the Atomic family. Start your transformation today.</p>
+        <form id="membershipForm">
+          {% csrf_token %}
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              {{ membership_form.first_name }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              {{ membership_form.last_name }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              {{ membership_form.email }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              {{ membership_form.phone }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              {{ membership_form.date_of_birth }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Membership Plan</label>
+              {{ membership_form.membership_plan }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fitness Goal</label>
+              {{ membership_form.fitness_goal }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              {{ membership_form.password }}
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm Password</label>
+              {{ membership_form.confirm_password }}
+            </div>
+          </div>
+          <div class="flip-btn-wrap">
+            <button type="button" class="btn-primary" id="submitMembership">Register Now</button>
+            <button type="button" class="flip-trigger" onclick="flipCard()">
+              <div class="flip-trigger-icon">↩</div>
+              Contact Us Instead
+            </button>
+          </div>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section id="testimonials">
+  <div class="testimonials-header reveal">
+    <div class="section-tag">What Members Say</div>
+    <h2 class="section-title">REAL<br><span>RESULTS.</span></h2>
+  </div>
+
+  <div class="carousel-wrapper reveal">
+    <div class="carousel-track" id="carouselTrack">
+
+      <div class="testimonial-slide">
+        <div class="testimonial-inner">
+          <p class="testimonial-text">
+            "Atomic Gym completely changed my life. In 8 months I lost 45 lbs and gained more confidence than I've had in years. The coaches here aren't just trainers — they're invested in your success."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">MR</div>
+            <div>
+              <div class="author-name">MARCUS REED</div>
+              <div class="author-info">Member for 2 years — Warrior Plan</div>
+              <div class="star-rating">★★★★★</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-slide">
+        <div class="testimonial-inner">
+          <p class="testimonial-text">
+            "I've been to gyms all over the country and nothing comes close to Atomic. The equipment is immaculate, the vibe is electric, and the personal training program took my performance to a completely different level."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SL</div>
+            <div>
+              <div class="author-name">SARAH LANGFORD</div>
+              <div class="author-info">Member for 3 years — Elite Plan</div>
+              <div class="star-rating">★★★★★</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-slide">
+        <div class="testimonial-inner">
+          <p class="testimonial-text">
+            "The combat sports program here is elite. My coach helped me drop two weight classes and sharpen my technique. The community is what keeps you coming back — everyone pushes each other."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">DK</div>
+            <div>
+              <div class="author-name">DARIUS KNIGHT</div>
+              <div class="author-info">Member for 18 months — Elite Plan</div>
+              <div class="star-rating">★★★★★</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-slide">
+        <div class="testimonial-inner">
+          <p class="testimonial-text">
+            "Joined on the Rookie plan and within three months I upgraded to Warrior. The nutrition coaching alone was worth every penny — I finally understand how to fuel my workouts properly."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JP</div>
+            <div>
+              <div class="author-name">JESSICA PARK</div>
+              <div class="author-info">Member for 1 year — Warrior Plan</div>
+              <div class="star-rating">★★★★★</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="carousel-controls">
+      <button class="carousel-btn" id="prevBtn" aria-label="Previous">←</button>
+      <div class="carousel-dots" id="carouselDots"></div>
+      <button class="carousel-btn" id="nextBtn" aria-label="Next">→</button>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/messages.js' %}"></script>
+<script>
+// Form submission handlers using API endpoints
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Contact Form Handler
+    const contactBtn = document.getElementById('submitContact');
+    if (contactBtn) {
+        contactBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+
+            const form = document.getElementById('contactForm');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch("{% url 'home:api_contact' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    toast.success(result.message);
+                    form.reset();
+                } else {
+                    if (result.errors) {
+                        const errorMessages = Object.values(result.errors).flat();
+                        toast.error(errorMessages.join(', '));
+                    } else {
+                        toast.error('Something went wrong. Please try again.');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                toast.error('Network error. Please check your connection.');
+            }
+        });
+    }
+
+    // Membership Registration Handler
+    const memberBtn = document.getElementById('submitMembership');
+    if (memberBtn) {
+        memberBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+
+            const form = document.getElementById('membershipForm');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch("{% url 'home:api_register_membership' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    toast.success(result.message);
+                    form.reset();
+
+                    // Optionally redirect or reload after registration
+                    setTimeout(() => {
+                        if (result.redirect_url) {
+                            window.location.href = result.redirect_url;
+                        } else {
+                            location.reload();
+                        }
+                    }, 2000);
+                } else {
+                    if (result.errors) {
+                        const errorMessages = Object.values(result.errors).flat();
+                        toast.error(errorMessages.join(', '));
+                    } else {
+                        toast.error('Registration failed. Please try again.');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                toast.error('Network error. Please check your connection.');
+            }
+        });
+    }
+
+    // Real-time email validation for membership form
+    const emailInput = document.querySelector('#membershipForm input[type="email"]');
+    if (emailInput) {
+        emailInput.addEventListener('blur', async function() {
+            const email = this.value;
+            if (email) {
+                try {
+                    const response = await fetch(`{% url 'home:api_check_user' %}?email=${encodeURIComponent(email)}`);
+                    const result = await response.json();
+
+                    if (result.exists) {
+                        toast.error(result.message);
+                        emailInput.classList.add('error');
+                    } else {
+                        emailInput.classList.remove('error');
+                    }
+                } catch (error) {
+                    console.error('Email check error:', error);
+                }
+            }
+        });
+    }
+
+});
+</script>
+{% endblock extra_js %}

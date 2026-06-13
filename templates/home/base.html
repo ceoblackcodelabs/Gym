@@ -1,0 +1,302 @@
+<!-- BASE.HTML -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{% block title %}{% endblock title %} — Forge Your Power</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+{% block inject_css %}{% endblock inject_css %}
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-icon">A</div>
+    <span class="nav-logo-text">ATOMIC<span> GYM</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Join Now</a>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#services" onclick="closeMobileMenu()">Services</a>
+  <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+  <a href="#testimonials" onclick="closeMobileMenu()">Reviews</a>
+  <a href="#contact" onclick="closeMobileMenu()" style="color:var(--atom-red)">Join Now →</a>
+</div>
+
+{% block content %}{% endblock content %}
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#hero" class="nav-logo">
+        <div class="nav-logo-icon">A</div>
+        <span class="nav-logo-text">ATOMIC<span> GYM</span></span>
+      </a>
+      <p class="footer-tagline">
+        More than a gym. A proving ground. Where ordinary people forge extraordinary versions of themselves.
+      </p>
+      <div class="social-links">
+        <a href="#" class="social-link" aria-label="Instagram">📸</a>
+        <a href="#" class="social-link" aria-label="Facebook">👤</a>
+        <a href="#" class="social-link" aria-label="Twitter/X">✖</a>
+        <a href="#" class="social-link" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Quick Links</div>
+      <ul class="footer-links">
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#pricing">Membership</a></li>
+        <li><a href="#contact">Register</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Programs</div>
+      <ul class="footer-links">
+        <li><a href="#">Strength Training</a></li>
+        <li><a href="#">HIIT & Cardio</a></li>
+        <li><a href="#">Combat Sports</a></li>
+        <li><a href="#">Personal Training</a></li>
+        <li><a href="#">Yoga & Mobility</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon">📍</span>
+        <span>123 Iron Way, Steel District, CA 90210</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon">📞</span>
+        <span>+1 (555) 263-4896</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon">✉</span>
+        <span>forge@atomicgym.com</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon">🕐</span>
+        <span>24/7 — Always Open</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 <span>ATOMIC GYM</span>. All rights reserved. Built for champions.</div>
+    <div class="footer-copy">Privacy Policy · Terms of Service</div>
+  </div>
+</footer>
+
+<script>
+// ===== NAV SCROLL =====
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ===== HAMBURGER =====
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+function closeMobileMenu() {
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+}
+
+// ===== HERO BG LOAD EFFECT =====
+window.addEventListener('load', () => {
+  document.getElementById('heroBg').classList.add('loaded');
+});
+
+// ===== SCROLL REVEAL =====
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+revealEls.forEach(el => observer.observe(el));
+
+// ===== FLIP CARD =====
+const flipCardEl = document.getElementById('flipCard');
+const flipFront = flipCardEl.querySelector('.flip-front');
+const flipBack  = flipCardEl.querySelector('.flip-back');
+
+function setFlipHeight() {
+  const isFlipped = flipCardEl.classList.contains('flipped');
+  // Temporarily make both visible to measure
+  flipBack.style.visibility = 'visible';
+  flipBack.style.position = 'relative';
+  const backH = flipBack.scrollHeight;
+  flipBack.style.position = '';
+  flipBack.style.visibility = '';
+
+  const frontH = flipFront.scrollHeight;
+  flipCardEl.style.minHeight = (isFlipped ? backH : frontH) + 'px';
+}
+
+function flipCard() {
+  flipCardEl.classList.toggle('flipped');
+  setFlipHeight();
+  document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function showReg() {
+  flipCardEl.classList.add('flipped');
+  setFlipHeight();
+  document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Set initial height on load and resize
+window.addEventListener('load', setFlipHeight);
+window.addEventListener('resize', setFlipHeight);
+
+// ===== CAROUSEL =====
+const track = document.getElementById('carouselTrack');
+const slides = track.querySelectorAll('.testimonial-slide');
+const dotsContainer = document.getElementById('carouselDots');
+let current = 0;
+let autoTimer;
+
+// Build dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+  dot.setAttribute('aria-label', `Testimonial ${i + 1}`);
+  dot.addEventListener('click', () => goTo(i));
+  dotsContainer.appendChild(dot);
+});
+
+function goTo(n) {
+  current = (n + slides.length) % slides.length;
+  track.style.transform = `translateX(-${current * 100}%)`;
+  dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === current);
+  });
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  goTo(current - 1);
+  resetAuto();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  goTo(current + 1);
+  resetAuto();
+});
+
+function startAuto() { autoTimer = setInterval(() => goTo(current + 1), 5000); }
+function resetAuto() { clearInterval(autoTimer); startAuto(); }
+startAuto();
+
+// Touch support for carousel
+let touchStartX = 0;
+track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+track.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    goTo(diff > 0 ? current + 1 : current - 1);
+    resetAuto();
+  }
+});
+
+// ===== 3D TILT ON SERVICE CARDS =====
+document.querySelectorAll('.service-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `translateY(-8px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+// 3D tilt on pricing cards
+document.querySelectorAll('.pricing-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    if (card.classList.contains('featured')) return;
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `translateY(-10px) rotateX(${-y * 8}deg) rotateY(${x * 8}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    if (!card.classList.contains('featured')) card.style.transform = '';
+  });
+});
+
+// ===== STAT COUNTER ANIMATION =====
+function animateCounters() {
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const text = el.textContent;
+    const num = parseFloat(text);
+    if (isNaN(num)) return;
+    const suffix = text.replace(/[\d.]/g, '');
+    let start = 0;
+    const duration = 1800;
+    const step = (timestamp, startTime) => {
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = (num < 100 ? Math.floor(ease * num) : Math.round(ease * num)) + suffix;
+      if (progress < 1) requestAnimationFrame(t => step(t, startTime));
+    };
+    requestAnimationFrame(t => step(t, t));
+  });
+}
+
+const heroObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { animateCounters(); heroObs.disconnect(); }
+}, { threshold: 0.5 });
+heroObs.observe(document.querySelector('.hero-stats'));
+</script>
+<script>
+// Ensure CSRF token is available
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

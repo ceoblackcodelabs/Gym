@@ -1,0 +1,108 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Dashboard - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle mb-3" width="150" height="150">
+                {% else %}
+                    <div class="bg-secondary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
+                        <span class="text-white display-4">{{ user.username|make_list|first|upper }}</span>
+                    </div>
+                {% endif %}
+                <h3>{{ user.get_full_name|default:user.username }}</h3>
+                <p class="text-muted">{{ user.email }}</p>
+
+                <!-- Account Type Badge -->
+                <span class="badge {% if profile.is_creator %}bg-primary{% else %}bg-success{% endif %} mb-3">
+                    {{ profile.get_account_type_display }}
+                </span>
+
+                <a href="{% url 'accounts:profile_edit' %}" class="btn btn-primary btn-sm">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Welcome, {{ user.username }}!</h4>
+            </div>
+            <div class="card-body">
+                <h5>Profile Information</h5>
+                <hr>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Full Name:</strong> {{ user.get_full_name }}</p>
+                <p><strong>Account Type:</strong> {{ profile.get_account_type_display }}</p>
+                <p><strong>Member since:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+
+                {% if profile.bio %}
+                    <p><strong>Bio:</strong> {{ profile.bio }}</p>
+                {% endif %}
+
+                {% if profile.location %}
+                    <p><strong>Location:</strong> {{ profile.location }}</p>
+                {% endif %}
+
+                {% if profile.birth_date %}
+                    <p><strong>Birth Date:</strong> {{ profile.birth_date }}</p>
+                {% endif %}
+
+                <!-- Creator Specific Information -->
+                {% if profile.is_creator %}
+                    <div class="mt-4">
+                        <h5>Creator Information</h5>
+                        <hr>
+                        {% if profile.website %}
+                            <p><strong>Website:</strong> <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a></p>
+                        {% endif %}
+
+                        {% if profile.social_instagram %}
+                            <p><strong>Instagram:</strong> @{{ profile.social_instagram }}</p>
+                        {% endif %}
+
+                        {% if profile.social_twitter %}
+                            <p><strong>Twitter:</strong> @{{ profile.social_twitter }}</p>
+                        {% endif %}
+
+                        {% if profile.social_youtube %}
+                            <p><strong>YouTube:</strong> <a href="{{ profile.social_youtube }}" target="_blank">{{ profile.social_youtube }}</a></p>
+                        {% endif %}
+
+                        <div class="alert alert-info mt-3">
+                            <strong>Creator Stats:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Total Posts: {{ creator_specific_data.total_posts }}</li>
+                                <li>Total Followers: {{ creator_specific_data.total_followers }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Fan Specific Information -->
+                {% if profile.is_fan %}
+                    <div class="mt-4">
+                        <h5>Fan Information</h5>
+                        <hr>
+                        {% if profile.favorite_genres %}
+                            <p><strong>Favorite Genres:</strong> {{ profile.favorite_genres }}</p>
+                        {% endif %}
+
+                        <div class="alert alert-info mt-3">
+                            <strong>Fan Stats:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Following: {{ fan_specific_data.following_count }} creators</li>
+                                <li>Liked Content: {{ fan_specific_data.liked_content_count }} items</li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
