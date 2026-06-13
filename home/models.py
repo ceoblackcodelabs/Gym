@@ -77,3 +77,73 @@ class GymMembership(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+# testimonials
+class Testimonial(models.Model):
+    """Store gym member testimonials"""
+
+    RATING_CHOICES = [
+        (1, '★☆☆☆☆'),
+        (2, '★★☆☆☆'),
+        (3, '★★★☆☆'),
+        (4, '★★★★☆'),
+        (5, '★★★★★'),
+    ]
+
+    # Author information
+    name = models.CharField(max_length=200, help_text="Full name of the testimonial author")
+    initials = models.CharField(max_length=5, blank=True, help_text="Auto-generated from name")
+
+    # Testimonial content
+    content = models.TextField(help_text="The testimonial message")
+    rating = models.IntegerField(choices=RATING_CHOICES, default=5)
+
+    # Member info
+    member_since = models.CharField(max_length=100, blank=True, help_text="e.g., 'Member for 2 years'")
+    membership_plan = models.CharField(max_length=50, blank=True, help_text="e.g., 'Warrior Plan'")
+
+    # Optional link to actual user
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='testimonials'
+    )
+
+    # Display settings
+    is_active = models.BooleanField(default=True, help_text="Show this testimonial on the website")
+    is_featured = models.BooleanField(default=False, help_text="Feature this testimonial prominently")
+    display_order = models.IntegerField(default=0, help_text="Lower numbers appear first")
+
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', '-created_at']
+        verbose_name = "Testimonial"
+        verbose_name_plural = "Testimonials"
+
+    def __str__(self):
+        return f"{self.name} - {self.rating}★"
+
+    def save(self, *args, **kwargs):
+        # Auto-generate initials from name
+        if not self.initials and self.name:
+            name_parts = self.name.split()
+            if len(name_parts) >= 2:
+                self.initials = (name_parts[0][0] + name_parts[1][0]).upper()
+            else:
+                self.initials = self.name[:2].upper()
+        super().save(*args, **kwargs)
+
+    def get_star_display(self):
+        """Return HTML star rating"""
+        return '★' * self.rating + '☆' * (5 - self.rating)
+
+    def get_avatar_color(self):
+        """Generate consistent color based on name"""
+        colors = ["#44ff33", "#70ff6b", "#6cff47", "#73ff50", "#48ff48"]
+        hash_val = sum(ord(c) for c in self.name) % len(colors)
+        return colors[hash_val]

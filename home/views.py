@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.conf import settings
 from .forms import ContactForm, MembershipRegistrationForm
-from .models import ContactMessage
+from .models import ContactMessage, Testimonial
 
 User = get_user_model()
 
@@ -17,6 +17,7 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['contact_form'] = ContactForm()
         context['membership_form'] = MembershipRegistrationForm()
+        context['testimonials'] = Testimonial.objects.filter(is_active=True).order_by('display_order', '-created_at')
         return context
 
 

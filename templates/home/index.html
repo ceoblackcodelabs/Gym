@@ -339,10 +339,30 @@
   <div class="carousel-wrapper reveal">
     <div class="carousel-track" id="carouselTrack">
 
+      {% for testimonial in testimonials %}
       <div class="testimonial-slide">
         <div class="testimonial-inner">
           <p class="testimonial-text">
-            "Atomic Gym completely changed my life. In 8 months I lost 45 lbs and gained more confidence than I've had in years. The coaches here aren't just trainers — they're invested in your success."
+            "{{ testimonial.content|truncatechars:300 }}"
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar" style="background: linear-gradient(135deg, {{ testimonial.get_avatar_color }}, #cc0000);">
+              {{ testimonial.initials }}
+            </div>
+            <div>
+              <div class="author-name">{{ testimonial.name }}</div>
+              <div class="author-info">{{ testimonial.member_since }} — {{ testimonial.membership_plan }}</div>
+              <div class="star-rating">{{ testimonial.get_star_display }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <!-- Fallback static testimonials if database is empty -->
+      <div class="testimonial-slide">
+        <div class="testimonial-inner">
+          <p class="testimonial-text">
+            "Atomic Gym completely changed my life. In 8 months I lost 45 lbs and gained more confidence than I've had in years."
           </p>
           <div class="testimonial-author">
             <div class="author-avatar">MR</div>
@@ -354,54 +374,7 @@
           </div>
         </div>
       </div>
-
-      <div class="testimonial-slide">
-        <div class="testimonial-inner">
-          <p class="testimonial-text">
-            "I've been to gyms all over the country and nothing comes close to Atomic. The equipment is immaculate, the vibe is electric, and the personal training program took my performance to a completely different level."
-          </p>
-          <div class="testimonial-author">
-            <div class="author-avatar">SL</div>
-            <div>
-              <div class="author-name">SARAH LANGFORD</div>
-              <div class="author-info">Member for 3 years — Elite Plan</div>
-              <div class="star-rating">★★★★★</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-slide">
-        <div class="testimonial-inner">
-          <p class="testimonial-text">
-            "The combat sports program here is elite. My coach helped me drop two weight classes and sharpen my technique. The community is what keeps you coming back — everyone pushes each other."
-          </p>
-          <div class="testimonial-author">
-            <div class="author-avatar">DK</div>
-            <div>
-              <div class="author-name">DARIUS KNIGHT</div>
-              <div class="author-info">Member for 18 months — Elite Plan</div>
-              <div class="star-rating">★★★★★</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="testimonial-slide">
-        <div class="testimonial-inner">
-          <p class="testimonial-text">
-            "Joined on the Rookie plan and within three months I upgraded to Warrior. The nutrition coaching alone was worth every penny — I finally understand how to fuel my workouts properly."
-          </p>
-          <div class="testimonial-author">
-            <div class="author-avatar">JP</div>
-            <div>
-              <div class="author-name">JESSICA PARK</div>
-              <div class="author-info">Member for 1 year — Warrior Plan</div>
-              <div class="star-rating">★★★★★</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {% endfor %}
 
     </div>
 
