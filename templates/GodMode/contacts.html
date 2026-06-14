@@ -1,0 +1,186 @@
+{% extends "GodMode/base.html" %}
+
+{% load static %}
+
+{% block title %}Contacts{% endblock title %}
+
+{% block body %}
+
+<div class="row">
+  <!-- Cash at Hand -->
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0"></h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cash at Bank -->
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0"></h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+11%</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expenses -->
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0"></h3>
+              <p class="text-danger ms-2 mb-0 font-weight-medium">-2.4%</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-danger">
+              <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Expenses</h6>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Sales -->
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0"></h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Sales</h6>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Message Contact</h4>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="quantity">User</label>
+            {{ form.name }}
+          </div>
+          <div class="form-group">
+            <label for="quantity">Enter Message</label>
+            {{ form.message }}
+          </div>
+          <button type="submit" class="btn btn-primary me-2">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Contact</h4>
+          <div class="position-relative">
+            <div class="daoughnutchart-wrapper">
+              <canvas id="transaction-history" class="transaction-chart"></canvas>
+            </div>
+            <div class="custom-value">$1200 <span>Total</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div class="row ">
+  <div class="col-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Contact List</h4>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <div class="form-check form-check-muted m-0">
+                    <label class="form-check-label">
+                      <input type="checkbox" class="form-check-input" id="check-all">
+                    </label>
+                  </div>
+                </th>
+                <th> UserName </th>
+                <th> Email </th>
+                <th> Phone </th>
+                <th> Subject </th>
+                <th> Date </th>
+                <th> Action </th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for contact in contacts %}
+                  <tr>
+                      <td>
+                        <div class="form-check form-check-muted m-0">
+                          <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input">
+                          </label>
+                        </div>
+                      </td>
+                      <td> {{ contact.first_name }} {{ contact.last_name }} </td>
+                      <td> {{ contact.email }} </td>
+                      <td> {{ contact.phone }} </td>
+                      <td> {{ contact.subject }} </td>
+                      <td> {{ contact.created_at }} </td>
+                      <td> <a class="btn btn-primary me-2" href="">Read</a> </td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock body %}
