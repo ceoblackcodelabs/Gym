@@ -1,0 +1,126 @@
+{% extends "GodMode/base.html" %}
+
+{% block title %}Add Check-in{% endblock title %}
+
+{% block body %}
+
+<div class="row">
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.cash_at_hand }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.cash_at_bank }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Total Income</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.total_income }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Net Profit</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.net_profit }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+
+  <!-- FORM -->
+  <div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+
+        <h4 class="card-title">Add Daily Check-in</h4>
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                {{ form.member }}
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-md-6">
+              {{ form.status }}
+            </div>
+
+            <div class="col-md-6">
+              {{ form.checkin_date }}
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-md-6">
+              {{ form.checkin_time }}
+            </div>
+
+            <div class="col-md-6">
+              {{ form.recorded_by }}
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-md-12">
+              {{ form.notes }}
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary mt-3">
+            Save Check-in
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDE INFO CARD -->
+  <div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+
+        <h4 class="card-title">Attendance Info</h4>
+
+        <p class="text-muted">
+          Use this form to record gym member attendance. Each member can only check in once per day.
+        </p>
+
+        <ul>
+          <li>✔ Tracks present / late / absent</li>
+          <li>✔ Links to membership</li>
+          <li>✔ Prevents duplicate check-ins</li>
+          <li>✔ Records staff admin</li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock body %}

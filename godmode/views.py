@@ -41,8 +41,8 @@ class GymMembershipDeleteView(DeleteView):
         return self.post(request, *args, **kwargs)
 
 # finance management
-from .models import Expense
-from .forms import ExpenseForm
+from .models import Expense, Income
+from .forms import ExpenseForm, IncomeForm
 # expense
 class ExpenseListView(ListView):
     model = Expense
@@ -65,6 +65,70 @@ class ExpenseUpdateView(UpdateView):
 class ExpenseDeleteView(DeleteView):
     model = Expense
     success_url = reverse_lazy('godmode:expenses')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+# income
+# income
+class IncomeListView(ListView):
+    model = Income
+    template_name = "GodMode/incomes.html"
+    context_object_name = "incomes"
+
+
+class IncomeCreateView(CreateView):
+    model = Income
+    form_class = IncomeForm
+    template_name = 'GodMode/income_form.html'
+    success_url = reverse_lazy('godmode:incomes')
+
+
+class IncomeUpdateView(UpdateView):
+    model = Income
+    form_class = IncomeForm
+    template_name = 'GodMode/income_form.html'
+    success_url = reverse_lazy('godmode:incomes')
+
+
+class IncomeDeleteView(DeleteView):
+    model = Income
+    success_url = reverse_lazy('godmode:incomes')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
+# check in
+from .models import DailyCheckIn
+from .forms import DailyCheckInForm
+
+class CheckInListView(ListView):
+    model = DailyCheckIn
+    template_name = "GodMode/checkins.html"
+    context_object_name = "checkins"
+
+
+# CREATE
+class CheckInCreateView(CreateView):
+    model = DailyCheckIn
+    form_class = DailyCheckInForm
+    template_name = "GodMode/checkin_form.html"
+    success_url = reverse_lazy('godmode:checkins')
+
+
+# UPDATE
+class CheckInUpdateView(UpdateView):
+    model = DailyCheckIn
+    form_class = DailyCheckInForm
+    template_name = "GodMode/checkin_form.html"
+    success_url = reverse_lazy('godmode:checkins')
+
+
+# DELETE
+class CheckInDeleteView(DeleteView):
+    model = DailyCheckIn
+    success_url = reverse_lazy('godmode:checkins')
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)

@@ -1,0 +1,195 @@
+{% extends 'GodMode/base.html' %}
+
+{% block title %}Total Income{% endblock title %}
+
+{% load custom_filters %}
+
+{% block body %}
+
+<div class="row">
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.cash_at_hand }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.cash_at_bank }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Total Income</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.total_income }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Net Profit</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.net_profit }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Income vs Expenses</h4>
+        <canvas id="areaChart" style="height:250px"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Income Sources</h4>
+        <canvas id="barChart" style="height:230px"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+
+        <h4 class="card-title">
+          Income Records
+          <a class="btn btn-primary" href="{% url 'godmode:income_create' %}">Add</a>
+        </h4>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Source</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for income in incomes %}
+              <tr>
+                <td>{{ income.title }}</td>
+                <td>{{ income.date_received }}</td>
+                <td>Ksh {{ income.amount }}</td>
+                <td>{{ income.source }}</td>
+                <td>{{ income.description }}</td>
+
+                <td>
+                  <a class="btn btn-primary me-2"
+                     href="{% url 'godmode:income_update' income.pk %}">
+                    Edit
+                  </a>
+
+                  <form method="post"
+                        action="{% url 'godmode:income_delete' income.pk %}"
+                        style="display:inline;"
+                        onsubmit="return confirm('Delete this income record?');">
+                    {% csrf_token %}
+                    <button class="btn btn-danger me-2" type="submit">
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock body %}
+
+{% block injectjs %}
+
+$(function() {
+  'use strict';
+
+  let income_labels = {{ income_labels|safe }};
+  let income_data = {{ income_data|safe }};
+
+  let expense_data = {{ expense_data|safe }};
+
+  var areaData = {
+    labels: income_labels,
+    datasets: [
+      {
+        label: 'Income',
+        data: income_data,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: true
+      },
+      {
+        label: 'Expenses',
+        data: expense_data,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        fill: true
+      }
+    ]
+  };
+
+  var options = {
+    scales: {
+      yAxes: [{
+        ticks: { beginAtZero: true }
+      }]
+    }
+  };
+
+  if ($("#areaChart").length) {
+    var ctx = $("#areaChart").get(0).getContext("2d");
+    new Chart(ctx, {
+      type: 'line',
+      data: areaData,
+      options: options
+    });
+  }
+
+  if ($("#barChart").length) {
+    var barCtx = $("#barChart").get(0).getContext("2d");
+
+    new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels: income_labels,
+        datasets: [{
+          label: 'Income Sources',
+          data: income_data,
+          backgroundColor: 'rgba(54, 162, 235, 0.5)'
+        }]
+      },
+      options: options
+    });
+  }
+
+});
+
+{% endblock injectjs %}

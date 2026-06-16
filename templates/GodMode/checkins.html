@@ -1,0 +1,141 @@
+{% extends "GodMode/base.html" %}
+
+{% block title %}Daily Check-ins{% endblock title %}
+
+{% block body %}
+
+<div class="row">
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.cash_at_hand }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.cash_at_bank }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Total Income</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.total_income }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Net Profit</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.net_profit }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Income vs Expenses</h4>
+        <canvas id="areaChart" style="height:250px"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Income Sources</h4>
+        <canvas id="barChart" style="height:230px"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER STATS (optional reuse dashboard) -->
+<div class="row">
+  <div class="col-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+
+        <h4 class="card-title">
+          Daily Check-ins
+          <a href="{% url 'godmode:checkin_create' %}" class="btn btn-primary ms-2">
+            Add Check-in
+          </a>
+        </h4>
+
+        <div class="table-responsive">
+          <table class="table">
+
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Recorded By</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for checkin in checkins %}
+              <tr>
+                <td>{{ checkin.member.user.username }}</td>
+                <td>
+                  {% if checkin.status == "present" %}
+                    <span class="badge bg-success">Present</span>
+                  {% elif checkin.status == "late" %}
+                    <span class="badge bg-warning">Late</span>
+                  {% elif checkin.status == "absent" %}
+                    <span class="badge bg-danger">Absent</span>
+                  {% else %}
+                    <span class="badge bg-secondary">Missed</span>
+                  {% endif %}
+                </td>
+
+                <td>{{ checkin.checkin_date }}</td>
+                <td>{{ checkin.checkin_time|time }}</td>
+                <td>{{ checkin.recorded_by.username }}</td>
+
+                <td>
+                  <a href="{% url 'godmode:checkin_update' checkin.pk %}"
+                     class="btn btn-primary btn-sm">
+                    Edit
+                  </a>
+
+                  <form method="post"
+                        action="{% url 'godmode:checkin_delete' checkin.pk %}"
+                        style="display:inline;"
+                        onsubmit="return confirm('Delete this check-in?');">
+                    {% csrf_token %}
+                    <button class="btn btn-danger btn-sm">
+                      Delete
+                    </button>
+                  </form>
+                </td>
+
+              </tr>
+              {% endfor %}
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock body %}

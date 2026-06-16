@@ -1,0 +1,147 @@
+{% extends "GodMode/base.html" %}
+
+{% load static %}
+
+{% block title %}Add Income{% endblock title %}
+
+{% block body %}
+
+<!-- DASHBOARD CARDS -->
+<div class="row">
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.cash_at_hand }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.cash_at_bank }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Total Expenses</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.expenses }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-muted font-weight-normal">Total Income</h6>
+        <h3 class="mb-0">Ksh {{ dashboard.total_income }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM + CHART -->
+<div class="row">
+
+  <!-- FORM SECTION -->
+  <div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+
+        <h4 class="card-title">
+          Add Income
+          <small class="text-success ms-2 mb-0 font-weight-medium">
+            {{ income.title }}
+          </small>
+        </h4>
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  {{ form.title }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  {{ form.amount }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  {{ form.source }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  {{ form.date_received }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  {{ form.description }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary me-2">
+            Submit
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART SECTION -->
+  <div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+
+        <h4 class="card-title">Income vs Expenses</h4>
+
+        <div class="position-relative">
+          <div class="daoughnutchart-wrapper">
+            <canvas id="transaction-history" class="transaction-chart"></canvas>
+          </div>
+
+          <div class="custom-value">
+            Ksh {{ dashboard.total_income }}
+            <span>Total Income</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock body %}

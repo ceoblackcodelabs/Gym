@@ -67,7 +67,7 @@ class GymMembershipForm(forms.ModelForm):
         self.fields['end_date'].help_text = "When does this membership expire? (Optional)"
         self.fields['payment_method'].help_text = "Credit card or payment method (Optional)"
 
-from .models import Expense
+from .models import Expense, Income
 class ExpenseForm(forms.ModelForm):
     class Meta:
         model = Expense
@@ -104,3 +104,83 @@ class ExpenseForm(forms.ModelForm):
         self.fields['name'].help_text = "Enter Expense Name"
         self.fields['price'].help_text = "amount spent"
         self.fields['description'].help_text = "describe further"
+
+
+from django import forms
+from .models import Income
+
+
+class IncomeForm(forms.ModelForm):
+    class Meta:
+        model = Income
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'id': 'title',
+                'placeholder': 'e.g. Client payment, Salary, Project income'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'id': 'description',
+                'rows': 6,
+                'placeholder': 'Enter income details or notes...'
+            }),
+            'amount': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'id': 'amount',
+                'placeholder': 'e.g. 50000'
+            }),
+            'source': forms.TextInput(attrs={
+                'class': 'form-control',
+                'id': 'source',
+                'placeholder': 'e.g. Freelance, Salary, Business'
+            }),
+            'date_received': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date',
+                'id': 'date_received'
+            }),
+        }
+
+# dailycheckin
+from .models import DailyCheckIn
+class DailyCheckInForm(forms.ModelForm):
+    class Meta:
+        model = DailyCheckIn
+        fields = '__all__'
+
+        widgets = {
+            'member': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'member'
+            }),
+            'user': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'user'
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'status'
+            }),
+            'checkin_time': forms.DateTimeInput(attrs={
+                'class': 'form-control',
+                'type': 'datetime-local',
+                'id': 'checkin_time'
+            }),
+            'checkin_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date',
+                'id': 'checkin_date'
+            }),
+            'notes': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Optional notes...',
+                'id': 'notes'
+            }),
+            'recorded_by': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'recorded_by'
+            }),
+        }
