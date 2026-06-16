@@ -184,3 +184,37 @@ class DailyCheckInForm(forms.ModelForm):
                 'id': 'recorded_by'
             }),
         }
+
+
+# inventory
+from .models import Inventory
+class InventoryForm(forms.ModelForm):
+    class Meta:
+        model = Inventory
+        fields = '__all__'
+
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g. Treadmill'
+            }),
+            'quantity': forms.NumberInput(attrs={
+                'class': 'form-control'
+            }),
+            'condition': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'brand': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g. Technogym'
+            }),
+            'notes': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Condition notes...'
+            }),
+            'purchase_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+        }

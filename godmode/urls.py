@@ -30,4 +30,10 @@ urlpatterns = [
     path('checkin/create/', CheckInCreateView.as_view(), name='checkin_create'),
     path('checkin/<int:pk>/update/', CheckInUpdateView.as_view(), name='checkin_update'),
     path('checkin/<int:pk>/delete/', CheckInDeleteView.as_view(), name='checkin_delete'),
+
+    # inventory
+    path('inventory/', InventoryListView.as_view(), name='inventory'),
+    path('inventory/create/', InventoryCreateView.as_view(), name='inventory_create'),
+    path('inventory/<int:pk>/update/', InventoryUpdateView.as_view(), name='inventory_update'),
+    path('inventory/<int:pk>/delete/', InventoryDeleteView.as_view(), name='inventory_delete'),
 ]

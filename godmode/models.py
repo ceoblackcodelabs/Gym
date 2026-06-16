@@ -67,3 +67,32 @@ class DailyCheckIn(models.Model):
 
     def __str__(self):
         return f"{self.member.user.username} - {self.status} - {self.checkin_date}"
+
+# inventory
+class Inventory(models.Model):
+
+    CONDITION_CHOICES = [
+        ('good', 'Good'),
+        ('faulty', 'Faulty'),
+        ('maintenance', 'Under Maintenance'),
+    ]
+
+    name = models.CharField(max_length=255)
+    quantity = models.PositiveIntegerField(default=1)
+
+    condition = models.CharField(
+        max_length=20,
+        choices=CONDITION_CHOICES,
+        default='good'
+    )
+
+    brand = models.CharField(max_length=100, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+
+    purchase_date = models.DateField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.get_condition_display()}"

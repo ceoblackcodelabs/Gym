@@ -132,3 +132,33 @@ class CheckInDeleteView(DeleteView):
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
+
+# inventory
+from .models import Inventory
+from .forms import InventoryForm
+class InventoryListView(ListView):
+    model = Inventory
+    template_name = "GodMode/inventory.html"
+    context_object_name = "inventory"
+
+
+class InventoryCreateView(CreateView):
+    model = Inventory
+    form_class = InventoryForm
+    template_name = "GodMode/inventory_form.html"
+    success_url = reverse_lazy('godmode:inventory')
+
+
+class InventoryUpdateView(UpdateView):
+    model = Inventory
+    form_class = InventoryForm
+    template_name = "GodMode/inventory_form.html"
+    success_url = reverse_lazy('godmode:inventory')
+
+
+class InventoryDeleteView(DeleteView):
+    model = Inventory
+    success_url = reverse_lazy('godmode:inventory')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
