@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Add Member{% endblock title %}
+{% block title %}Add Expense{% endblock title %}
 
 {% block body %}
 
@@ -93,53 +93,30 @@
     <div class="col-md-6 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Membership <small class='text-success ms-2 mb-0 font-weight-medium'>{{ product.name }}</small></h4>
+          <h4 class="card-title">Add Expenses <small class='text-success ms-2 mb-0 font-weight-medium'>{{ product.name }}</small></h4>
           <form method="POST">
             {% csrf_token %}
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group row">
                   <div class="col-sm-12">
-                    {{ form.user }}
+                    {{ form.name }}
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
                   <div class="col-sm-12">
-                    {{ form.membership_plan }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group row">
-                  <div class="col-sm-12">
-                    {{ form.status }}
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group row">
-                  <div class="col-sm-12">
-                    {{ form.payment_method }}
+                    {{ form.price }}
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <div class="form-group row">
                   <div class="col-sm-12">
-                    {{ form.end_date }}
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group row">
-                  <div class="col-sm-12">
-                    {{ form.last_payment_date }}
+                    {{ form.description }}
                   </div>
                 </div>
               </div>
@@ -152,7 +129,7 @@
     <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Daily Sales</h4>
+            <h4 class="card-title">Daily Expense Vs Sales</h4>
             <div class="position-relative">
               <div class="daoughnutchart-wrapper">
                 <canvas id="transaction-history" class="transaction-chart"></canvas>

@@ -39,3 +39,32 @@ class GymMembershipDeleteView(DeleteView):
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
+
+# finance management
+from .models import Expense
+from .forms import ExpenseForm
+# expense
+class ExpenseListView(ListView):
+    model = Expense
+    template_name = "GodMode/expenses.html"
+    context_object_name = "expenses"
+
+class ExpenseCreateView(CreateView):
+    model = Expense
+    form_class = ExpenseForm
+    template_name = 'GodMode/expense_form.html'
+    success_url = reverse_lazy('godmode:expenses')
+
+class ExpenseUpdateView(UpdateView):
+    model = Expense
+    form_class = ExpenseForm
+    template_name = 'GodMode/expense_form.html'
+    success_url = reverse_lazy('godmode:expenses')
+
+
+class ExpenseDeleteView(DeleteView):
+    model = Expense
+    success_url = reverse_lazy('godmode:expenses')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)

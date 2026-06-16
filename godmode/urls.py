@@ -12,4 +12,10 @@ urlpatterns = [
     path('create/', GymMembershipCreateView.as_view(), name='membership_create'),
     path('<int:pk>/edit/', GymMembershipUpdateView.as_view(), name='membership_update'),
     path('<int:pk>/delete/', GymMembershipDeleteView.as_view(), name='membership_delete'),
+
+    # finance
+    path('expenses/', ExpenseListView.as_view(), name="expenses"),
+    path('expenses/create/', ExpenseCreateView.as_view(), name='expense_create'),
+    path('expenses/update/<int:pk>/', ExpenseUpdateView.as_view(), name='expense_update'),
+    path('expenses/<int:pk>/delete/', ExpenseDeleteView.as_view(), name='expense_delete'),
 ]

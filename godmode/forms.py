@@ -66,3 +66,41 @@ class GymMembershipForm(forms.ModelForm):
         self.fields['status'].help_text = "Current membership status"
         self.fields['end_date'].help_text = "When does this membership expire? (Optional)"
         self.fields['payment_method'].help_text = "Credit card or payment method (Optional)"
+
+from .models import Expense
+class ExpenseForm(forms.ModelForm):
+    class Meta:
+        model = Expense
+        fields = [
+            'name',
+            'price',
+            'description',
+        ]
+
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Expense Name',
+                'id': 'name'
+            }),
+            'price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Amount Used',
+                'id': 'amount'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Briefly Describe and Additional Info',
+                'id': 'description',
+                'style': 'height:150px;'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+        # Add help texts
+        self.fields['name'].help_text = "Enter Expense Name"
+        self.fields['price'].help_text = "amount spent"
+        self.fields['description'].help_text = "describe further"
