@@ -7,292 +7,293 @@
 {% block title %}Gym Dashboard{% endblock title %}
 
 {% block body %}
+
 <div class="row">
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$12.34</h3>
-                          <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-success ">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
-                        </div>
-                      </div>
-                    </div>
-                    <h6 class="text-muted font-weight-normal">Potential growth</h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$17.34</h3>
-                          <p class="text-success ms-2 mb-0 font-weight-medium">+11%</p>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-success">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
-                        </div>
-                      </div>
-                    </div>
-                    <h6 class="text-muted font-weight-normal">Revenue current</h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$12.34</h3>
-                          <p class="text-danger ms-2 mb-0 font-weight-medium">-2.4%</p>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-danger">
-                          <span class="mdi mdi-arrow-bottom-left icon-item"></span>
-                        </div>
-                      </div>
-                    </div>
-                    <h6 class="text-muted font-weight-normal">Daily Income</h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                          <h3 class="mb-0">$31.53</h3>
-                          <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
-                        </div>
-                      </div>
-                      <div class="col-3">
-                        <div class="icon icon-box-success ">
-                          <span class="mdi mdi-arrow-top-right icon-item"></span>
-                        </div>
-                      </div>
-                    </div>
-                    <h6 class="text-muted font-weight-normal">Expense current</h6>
-                  </div>
-                </div>
-              </div>
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">${{ dashboard.total_income|floatformat:2 }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+{{ dashboard.active_members }}%</p>
             </div>
-            <div class="row">
-              <div class="col-md-4 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <h4 class="card-title">Transaction History</h4>
-                    <div class="position-relative">
-                      <div class="daoughnutchart-wrapper">
-                        <canvas id="transaction-history" class="transaction-chart"></canvas>
-                      </div>
-                      <div class="custom-value">$1200 <span>Total</span>
-                      </div>
-                    </div>
-                    <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                      <div class="text-md-center text-xl-left">
-                        <h6 class="mb-1">Transfer to Paypal</h6>
-                        <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
-                      </div>
-                      <div class="align-self-center flex-grow text-end text-md-center text-xl-right py-md-2 py-xl-0">
-                        <h6 class="font-weight-bold mb-0">$236</h6>
-                      </div>
-                    </div>
-                    <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                      <div class="text-md-center text-xl-left">
-                        <h6 class="mb-1">Tranfer to Stripe</h6>
-                        <p class="text-muted mb-0">07 Jan 2019, 09:12AM</p>
-                      </div>
-                      <div class="align-self-center flex-grow text-end text-md-center text-xl-right py-md-2 py-xl-0">
-                        <h6 class="font-weight-bold mb-0">$593</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-8 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="d-flex flex-row justify-content-between">
-                      <h4 class="card-title mb-1">Open Projects</h4>
-                      <p class="text-muted mb-1">Your data status</p>
-                    </div>
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="preview-list">
-                          <div class="preview-item border-bottom">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-primary">
-                                <i class="mdi mdi-file-document"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">Admin dashboard design</h6>
-                                <p class="text-muted mb-0">Broadcast web app mockup</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">15 minutes ago</p>
-                                <p class="text-muted mb-0">30 tasks, 5 issues </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="preview-item border-bottom">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-success">
-                                <i class="mdi mdi-cloud-download"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">Wordpress Development</h6>
-                                <p class="text-muted mb-0">Upload new design</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">1 hour ago</p>
-                                <p class="text-muted mb-0">23 tasks, 5 issues </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="preview-item border-bottom">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-info">
-                                <i class="mdi mdi-clock"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">Project meeting</h6>
-                                <p class="text-muted mb-0">New project discussion</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">35 minutes ago</p>
-                                <p class="text-muted mb-0">15 tasks, 2 issues</p>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="preview-item border-bottom">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-danger">
-                                <i class="mdi mdi-email-open"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">Broadcast Mail</h6>
-                                <p class="text-muted mb-0">Sent release details to team</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">55 minutes ago</p>
-                                <p class="text-muted mb-0">35 tasks, 7 issues </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="preview-item">
-                            <div class="preview-thumbnail">
-                              <div class="preview-icon bg-warning">
-                                <i class="mdi mdi-chart-pie"></i>
-                              </div>
-                            </div>
-                            <div class="preview-item-content d-sm-flex flex-grow">
-                              <div class="flex-grow">
-                                <h6 class="preview-subject">UI Design</h6>
-                                <p class="text-muted mb-0">New application planning</p>
-                              </div>
-                              <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <p class="text-muted">50 minutes ago</p>
-                                <p class="text-muted mb-0">27 tasks, 4 issues </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
             </div>
-            <div class="row">
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Revenue</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$32123</h2>
-                          <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">11.38% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Sales</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$45850</h2>
-                          <p class="text-success ms-2 mb-0 font-weight-medium">+8.3%</p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-4 grid-margin">
-                <div class="card">
-                  <div class="card-body">
-                    <h5>Purchase</h5>
-                    <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
-                        <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$2039</h2>
-                          <p class="text-danger ms-2 mb-0 font-weight-medium">-2.1% </p>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">2.27% Since last month</h6>
-                      </div>
-                      <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
-                        <i class="icon-lg mdi mdi-monitor text-success ml-auto"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Income</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">${{ dashboard.total_expenses|floatformat:2 }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">{{ dashboard.active_members }}</p>
             </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Expenses</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.active_members }}</h3>
+              <p class="text-danger ms-2 mb-0 font-weight-medium">{{ dashboard.today_checkins }}</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-danger">
+              <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Active Members</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.inventory_items }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">{{ dashboard.faulty_inventory }}</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Inventory</h6>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Income vs Expenses (Monthly)</h4>
+        <div style="position:relative; height:250px; width:100%;">
+          <canvas id="incomeExpenseChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Daily Check-ins (Last 30 Days)</h4>
+        <div style="position:relative; height:230px; width:100%;">
+          <canvas id="checkinChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Membership Breakdown</h4>
+        <div class="position-relative">
+          <div class="daoughnutchart-wrapper">
+            <canvas id="membershipChart" class="transaction-chart"></canvas>
+          </div>
+          <div class="custom-value">{{ dashboard.active_members }} <span>Total</span>
+          </div>
+        </div>
+        {% for checkin in recent_checkins|slice:":2" %}
+        <div class="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+          <div class="text-md-center text-xl-left">
+            <h6 class="mb-1">{{ checkin.member.user.username }}</h6>
+            <p class="text-muted mb-0">{{ checkin.checkin_date|date:"d M Y" }}</p>
+          </div>
+          <div class="align-self-center flex-grow text-end text-md-center text-xl-right py-md-2 py-xl-0">
+            <h6 class="font-weight-bold mb-0">{{ checkin.get_status_display }}</h6>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex flex-row justify-content-between">
+          <h4 class="card-title mb-1">Recent Activity</h4>
+          <p class="text-muted mb-1">Your data status</p>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="preview-list">
+              {% for income in recent_income %}
+              <div class="preview-item border-bottom">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-primary">
+                    <i class="mdi mdi-cash"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content d-sm-flex flex-grow">
+                  <div class="flex-grow">
+                    <h6 class="preview-subject">{{ income.title }}</h6>
+                    <p class="text-muted mb-0">{{ income.source|default:"Income" }}</p>
+                  </div>
+                  <div class="mr-auto text-sm-right pt-2 pt-sm-0">
+                    <p class="text-muted">${{ income.amount|floatformat:2 }}</p>
+                    <p class="text-muted mb-0">{{ income.date_received|date:"d M Y" }}</p>
+                  </div>
+                </div>
+              </div>
+              {% empty %}
+              <div class="preview-item border-bottom">
+                <div class="preview-item-content d-sm-flex flex-grow">
+                  <div class="flex-grow">
+                    <h6 class="preview-subject">No recent income</h6>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+
+              {% for expense in recent_expenses %}
+              <div class="preview-item border-bottom">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-danger">
+                    <i class="mdi mdi-credit-card"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content d-sm-flex flex-grow">
+                  <div class="flex-grow">
+                    <h6 class="preview-subject">{{ expense.name }}</h6>
+                    <p class="text-muted mb-0">{{ expense.description|truncatechars:30 }}</p>
+                  </div>
+                  <div class="mr-auto text-sm-right pt-2 pt-sm-0">
+                    <p class="text-muted">${{ expense.price }}</p>
+                    <p class="text-muted mb-0">{{ expense.date|date:"d M Y" }}</p>
+                  </div>
+                </div>
+              </div>
+              {% empty %}
+              <div class="preview-item border-bottom">
+                <div class="preview-item-content d-sm-flex flex-grow">
+                  <div class="flex-grow">
+                    <h6 class="preview-subject">No recent expenses</h6>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-4 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <h5>Total Revenue</h5>
+        <div class="row">
+          <div class="col-8 col-sm-12 col-xl-8 my-auto">
+            <div class="d-flex d-sm-block d-md-flex align-items-center">
+              <h2 class="mb-0">${{ dashboard.total_income|floatformat:0 }}</h2>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+{{ dashboard.active_members }}%</p>
+            </div>
+            <h6 class="text-muted font-weight-normal">{{ dashboard.active_members }} Active Members</h6>
+          </div>
+          <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+            <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <h5>Net Profit</h5>
+        <div class="row">
+          <div class="col-8 col-sm-12 col-xl-8 my-auto">
+            <div class="d-flex d-sm-block d-md-flex align-items-center">
+              <h2 class="mb-0">${{ dashboard.net_profit|floatformat:0 }}</h2>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+{{ dashboard.today_checkins }}</p>
+            </div>
+            <h6 class="text-muted font-weight-normal">{{ dashboard.today_checkins }} Check-ins Today</h6>
+          </div>
+          <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+            <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <h5>Inventory</h5>
+        <div class="row">
+          <div class="col-8 col-sm-12 col-xl-8 my-auto">
+            <div class="d-flex d-sm-block d-md-flex align-items-center">
+              <h2 class="mb-0">{{ dashboard.inventory_items }}</h2>
+              <p class="text-danger ms-2 mb-0 font-weight-medium">{{ dashboard.faulty_inventory }}</p>
+            </div>
+            <h6 class="text-muted font-weight-normal">{{ dashboard.faulty_inventory }} Faulty Items</h6>
+          </div>
+          <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+            <i class="icon-lg mdi mdi-monitor text-success ml-auto"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock body %}
 
 {% block injectjs %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 $(function() {
-  // Income vs Expenses Chart
-  if ($("#incomeExpenseChart").length) {
-    var ctx = document.getElementById('incomeExpenseChart').getContext('2d');
-    new Chart(ctx, {
+  // Store chart instances to prevent duplicates
+  var chartInstances = {};
+
+  // Destroy existing chart if it exists
+  function destroyChart(chartId) {
+    if (chartInstances[chartId]) {
+      chartInstances[chartId].destroy();
+      delete chartInstances[chartId];
+    }
+  }
+
+  // Income vs Expenses Chart (Bar Chart)
+  var incomeExpenseCtx = document.getElementById('incomeExpenseChart');
+  if (incomeExpenseCtx) {
+    destroyChart('incomeExpense');
+    chartInstances['incomeExpense'] = new Chart(incomeExpenseCtx.getContext('2d'), {
       type: 'bar',
       data: {
         labels: {{ income_expense_labels|safe }},
@@ -316,6 +317,9 @@ $(function() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 0 // Disable animation to prevent expansion
+        },
         scales: {
           y: {
             beginAtZero: true,
@@ -339,10 +343,11 @@ $(function() {
     });
   }
 
-  // Membership Breakdown Chart
-  if ($("#membershipChart").length) {
-    var ctx = document.getElementById('membershipChart').getContext('2d');
-    new Chart(ctx, {
+  // Membership Breakdown Chart (Doughnut)
+  var membershipCtx = document.getElementById('membershipChart');
+  if (membershipCtx) {
+    destroyChart('membership');
+    chartInstances['membership'] = new Chart(membershipCtx.getContext('2d'), {
       type: 'doughnut',
       data: {
         labels: {{ membership_labels|safe }},
@@ -364,6 +369,9 @@ $(function() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 0 // Disable animation to prevent expansion
+        },
         plugins: {
           legend: {
             position: 'bottom'
@@ -373,10 +381,11 @@ $(function() {
     });
   }
 
-  // Daily Check-ins Chart
-  if ($("#checkinChart").length) {
-    var ctx = document.getElementById('checkinChart').getContext('2d');
-    new Chart(ctx, {
+  // Daily Check-ins Chart (Line Chart)
+  var checkinCtx = document.getElementById('checkinChart');
+  if (checkinCtx) {
+    destroyChart('checkin');
+    chartInstances['checkin'] = new Chart(checkinCtx.getContext('2d'), {
       type: 'line',
       data: {
         labels: {{ checkin_labels|safe }},
@@ -393,6 +402,9 @@ $(function() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 0 // Disable animation to prevent expansion
+        },
         scales: {
           y: {
             beginAtZero: true,
@@ -414,40 +426,6 @@ $(function() {
         elements: {
           point: {
             radius: 0
-          }
-        }
-      }
-    });
-  }
-
-  // Inventory Condition Chart
-  if ($("#inventoryChart").length) {
-    var ctx = document.getElementById('inventoryChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: {{ inventory_condition_labels|safe }},
-        datasets: [{
-          data: {{ inventory_condition_data|safe }},
-          backgroundColor: [
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(255, 206, 86, 0.6)'
-          ],
-          borderColor: [
-            'rgba(75, 192, 192, 1)',
-            'rgba(255, 99, 132, 1)',
-            'rgba(255, 206, 86, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom'
           }
         }
       }
