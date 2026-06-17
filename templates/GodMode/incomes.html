@@ -48,8 +48,10 @@
   <div class="col-lg-6 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Income vs Expenses</h4>
-        <canvas id="areaChart" style="height:250px"></canvas>
+        <h4 class="card-title">Income vs Expenses (Line Chart)</h4>
+        <div style="position:relative; height:250px; width:100%;">
+          <canvas id="incomeExpenseLineChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -57,8 +59,10 @@
   <div class="col-lg-6 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Income Sources</h4>
-        <canvas id="barChart" style="height:230px"></canvas>
+        <h4 class="card-title">Income Sources (Bar Chart)</h4>
+        <div style="position:relative; height:230px; width:100%;">
+          <canvas id="incomeBarChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -127,69 +131,128 @@
 {% endblock body %}
 
 {% block injectjs %}
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
 $(function() {
   'use strict';
 
+  // Store chart instances
+  var chartInstances = {};
+
+  // Destroy existing chart if it exists
+  function destroyChart(chartId) {
+    if (chartInstances[chartId]) {
+      chartInstances[chartId].destroy();
+      delete chartInstances[chartId];
+    }
+  }
+
   let income_labels = {{ income_labels|safe }};
   let income_data = {{ income_data|safe }};
-
   let expense_data = {{ expense_data|safe }};
 
-  var areaData = {
-    labels: income_labels,
-    datasets: [
-      {
-        label: 'Income',
-        data: income_data,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        fill: true
-      },
-      {
-        label: 'Expenses',
-        data: expense_data,
-        borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        fill: true
-      }
-    ]
-  };
-
-  var options = {
-    scales: {
-      yAxes: [{
-        ticks: { beginAtZero: true }
-      }]
-    }
-  };
-
-  if ($("#areaChart").length) {
-    var ctx = $("#areaChart").get(0).getContext("2d");
-    new Chart(ctx, {
+  // Line Chart - Income vs Expenses
+  var lineCtx = document.getElementById('incomeExpenseLineChart');
+  if (lineCtx) {
+    destroyChart('incomeExpenseLine');
+    chartInstances['incomeExpenseLine'] = new Chart(lineCtx.getContext('2d'), {
       type: 'line',
-      data: areaData,
-      options: options
+      data: {
+        labels: income_labels,
+        datasets: [
+          {
+            label: 'Income',
+            data: income_data,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2
+          },
+          {
+            label: 'Expenses',
+            data: expense_data,
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 0
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: "rgba(204, 204, 204, 0.1)"
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        }
+      }
     });
   }
 
-  if ($("#barChart").length) {
-    var barCtx = $("#barChart").get(0).getContext("2d");
-
-    new Chart(barCtx, {
+  // Bar Chart - Income Sources
+  var barCtx = document.getElementById('incomeBarChart');
+  if (barCtx) {
+    destroyChart('incomeBar');
+    chartInstances['incomeBar'] = new Chart(barCtx.getContext('2d'), {
       type: 'bar',
       data: {
         labels: income_labels,
         datasets: [{
           label: 'Income Sources',
           data: income_data,
-          backgroundColor: 'rgba(54, 162, 235, 0.5)'
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
         }]
       },
-      options: options
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 0
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: "rgba(204, 204, 204, 0.1)"
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        }
+      }
     });
   }
-
 });
-
+</script>
 {% endblock injectjs %}

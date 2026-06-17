@@ -2,7 +2,9 @@
 
 {% load static %}
 
-{% block title %}Add Income{% endblock title %}
+{% block title %}{% if form.instance.pk %}Update{% else %}Add{% endif %} Income{% endblock title %}
+
+{% load custom_filters %}
 
 {% block body %}
 
@@ -11,35 +13,83 @@
   <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
-        <h3 class="mb-0">Ksh {{ dashboard.cash_at_hand }}</h3>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
-        <h3 class="mb-0">Ksh {{ dashboard.cash_at_bank }}</h3>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <h6 class="text-muted font-weight-normal">Total Expenses</h6>
-        <h3 class="mb-0">Ksh {{ dashboard.expenses }}</h3>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">Ksh {{ dashboard.total_income }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Income</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
         <h6 class="text-muted font-weight-normal">Total Income</h6>
-        <h3 class="mb-0">Ksh {{ dashboard.total_income }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">Ksh {{ dashboard.total_expenses }}</h3>
+              <p class="text-danger ms-2 mb-0 font-weight-medium">Expenses</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-danger">
+              <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Expenses</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">Ksh {{ dashboard.net_profit }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Profit</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-cash-multiple icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Net Profit</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.income_count }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Records</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-file-document-box icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Records</h6>
       </div>
     </div>
   </div>
@@ -49,69 +99,68 @@
 <div class="row">
 
   <!-- FORM SECTION -->
-  <div class="col-md-6 grid-margin stretch-card">
+  <div class="col-md-7 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
 
         <h4 class="card-title">
-          Add Income
+          {% if form.instance.pk %}Update{% else %}Add{% endif %} Income
           <small class="text-success ms-2 mb-0 font-weight-medium">
-            {{ income.title }}
+            {{ form.instance.title|default:"" }}
           </small>
         </h4>
 
-        <form method="POST">
+        <form method="POST" class="forms-sample">
           {% csrf_token %}
 
           <div class="row">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <div class="col-sm-12">
-                  {{ form.title }}
-                </div>
-              </div>
+            <div class="col-md-6 form-group">
+              <label for="{{ form.title.id_for_label }}">Title</label>
+              {{ form.title }}
+              {% if form.title.errors %}
+                <div class="text-danger">{{ form.title.errors }}</div>
+              {% endif %}
             </div>
 
-            <div class="col-md-6">
-              <div class="form-group row">
-                <div class="col-sm-12">
-                  {{ form.amount }}
-                </div>
-              </div>
+            <div class="col-md-6 form-group">
+              <label for="{{ form.amount.id_for_label }}">Amount (Ksh)</label>
+              {{ form.amount }}
+              {% if form.amount.errors %}
+                <div class="text-danger">{{ form.amount.errors }}</div>
+              {% endif %}
             </div>
           </div>
 
           <div class="row">
-            <div class="col-md-6">
-              <div class="form-group row">
-                <div class="col-sm-12">
-                  {{ form.source }}
-                </div>
-              </div>
+            <div class="col-md-6 form-group">
+              <label for="{{ form.source.id_for_label }}">Source</label>
+              {{ form.source }}
+              {% if form.source.errors %}
+                <div class="text-danger">{{ form.source.errors }}</div>
+              {% endif %}
             </div>
 
-            <div class="col-md-6">
-              <div class="form-group row">
-                <div class="col-sm-12">
-                  {{ form.date_received }}
-                </div>
-              </div>
+            <div class="col-md-6 form-group">
+              <label for="{{ form.date_received.id_for_label }}">Date Received</label>
+              {{ form.date_received }}
+              {% if form.date_received.errors %}
+                <div class="text-danger">{{ form.date_received.errors }}</div>
+              {% endif %}
             </div>
           </div>
 
-          <div class="row">
-            <div class="col-md-12">
-              <div class="form-group row">
-                <div class="col-sm-12">
-                  {{ form.description }}
-                </div>
-              </div>
-            </div>
+          <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+              <div class="text-danger">{{ form.description.errors }}</div>
+            {% endif %}
           </div>
 
           <button type="submit" class="btn btn-primary me-2">
-            Submit
+            {% if form.instance.pk %}Update{% else %}Save{% endif %} Income
           </button>
+          <a href="{% url 'godmode:incomes' %}" class="btn btn-light">Cancel</a>
 
         </form>
 
@@ -120,22 +169,36 @@
   </div>
 
   <!-- CHART SECTION -->
-  <div class="col-md-6 grid-margin stretch-card">
+  <div class="col-md-5 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
 
-        <h4 class="card-title">Income vs Expenses</h4>
+        <h4 class="card-title">Income Overview</h4>
 
         <div class="position-relative">
-          <div class="daoughnutchart-wrapper">
-            <canvas id="transaction-history" class="transaction-chart"></canvas>
+          <div style="position:relative; height:250px; width:100%;">
+            <canvas id="incomeDonutChart"></canvas>
           </div>
-
-          <div class="custom-value">
-            Ksh {{ dashboard.total_income }}
-            <span>Total Income</span>
+          <div class="text-center mt-3">
+            <h5 class="mb-0">Ksh {{ dashboard.total_income }}</h5>
+            <p class="text-muted">Total Income</p>
           </div>
+        </div>
 
+        <!-- Quick Stats -->
+        <div class="mt-4 pt-3 border-top">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted">Monthly Average:</span>
+            <span class="fw-bold">Ksh {{ dashboard.monthly_average }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">Highest Income:</span>
+            <span class="fw-bold text-success">Ksh {{ dashboard.highest_income }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">Income Sources:</span>
+            <span class="fw-bold">{{ dashboard.unique_sources }}</span>
+          </div>
         </div>
 
       </div>
@@ -145,3 +208,62 @@
 </div>
 
 {% endblock body %}
+
+{% block injectjs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(function() {
+  'use strict';
+
+  // Donut Chart for Income Distribution
+  var donutCtx = document.getElementById('incomeDonutChart');
+  if (donutCtx) {
+    new Chart(donutCtx.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: {{ income_source_labels|safe }},
+        datasets: [{
+          data: {{ income_source_data|safe }},
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(255, 99, 132, 0.6)'
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 10,
+              usePointStyle: true
+            }
+          }
+        },
+        cutout: '65%'
+      }
+    });
+  }
+
+  // Set date input type
+  if ($('#id_date_received').length) {
+    $('#id_date_received').attr('type', 'date');
+  }
+});
+</script>
+{% endblock injectjs %}

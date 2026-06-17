@@ -1,6 +1,8 @@
 {% extends "GodMode/base.html" %}
 
-{% block title %}Add Inventory{% endblock title %}
+{% block title %}{% if form.instance.pk %}Update{% else %}Add{% endif %} Inventory{% endblock title %}
+
+{% load custom_filters %}
 
 {% block body %}
 
@@ -11,77 +13,80 @@
         <div class="row">
           <div class="col-9">
             <div class="d-flex align-items-center align-self-start">
-              <h3 class="mb-0">Ksh {{ dashboard.cash_at_hand }}</h3>
-              <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="icon icon-box-success ">
-              <span class="mdi mdi-arrow-top-right icon-item"></span>
-            </div>
-          </div>
-        </div>
-        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-9">
-            <div class="d-flex align-items-center align-self-start">
-              <h3 class="mb-0">Ksh {{ dashboard.cash_at_bank }}</h3>
-              <p class="text-success ms-2 mb-0 font-weight-medium">+11%</p>
+              <h3 class="mb-0">{{ dashboard.total_items }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Total</p>
             </div>
           </div>
           <div class="col-3">
             <div class="icon icon-box-success">
-              <span class="mdi mdi-arrow-top-right icon-item"></span>
+              <span class="mdi mdi-package-variant icon-item"></span>
             </div>
           </div>
         </div>
-        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
+        <h6 class="text-muted font-weight-normal">Total Items</h6>
       </div>
     </div>
   </div>
+
   <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
         <div class="row">
           <div class="col-9">
             <div class="d-flex align-items-center align-self-start">
-              <h3 class="mb-0">Ksh {{ dashboard.expenses }}</h3>
-              <p class="text-danger ms-2 mb-0 font-weight-medium">-2.4%</p>
+              <h3 class="mb-0">{{ dashboard.good_items }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Good</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-check-circle icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Good Condition</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.maintenance_items }}</h3>
+              <p class="text-warning ms-2 mb-0 font-weight-medium">Maint.</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-warning">
+              <span class="mdi mdi-tools icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Under Maintenance</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.faulty_items }}</h3>
+              <p class="text-danger ms-2 mb-0 font-weight-medium">Faulty</p>
             </div>
           </div>
           <div class="col-3">
             <div class="icon icon-box-danger">
-              <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+              <span class="mdi mdi-alert-circle icon-item"></span>
             </div>
           </div>
         </div>
-        <h6 class="text-muted font-weight-normal">Expenses</h6>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-9">
-            <div class="d-flex align-items-center align-self-start">
-              <h3 class="mb-0">Ksh {{ dashboard.total_sales }}</h3>
-              <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="icon icon-box-success ">
-              <span class="mdi mdi-arrow-top-right icon-item"></span>
-            </div>
-          </div>
-        </div>
-        <h6 class="text-muted font-weight-normal">Total Sales</h6>
+        <h6 class="text-muted font-weight-normal">Faulty Items</h6>
       </div>
     </div>
   </div>
@@ -90,50 +95,79 @@
 <div class="row">
 
   <!-- FORM -->
-  <div class="col-md-6 grid-margin stretch-card">
+  <div class="col-md-7 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
 
-        <h4 class="card-title">Add Inventory Item</h4>
+        <h4 class="card-title">
+          {% if form.instance.pk %}Update{% else %}Add{% endif %} Inventory Item
+        </h4>
 
-        <form method="POST">
+        <form method="POST" class="forms-sample">
           {% csrf_token %}
 
+          <!-- Name Field -->
+          <div class="form-group">
+            <label for="{{ form.name.id_for_label }}">Item Name</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+              <div class="text-danger">{{ form.name.errors }}</div>
+            {% endif %}
+          </div>
+
           <div class="row">
-            <div class="col-md-12">
-              {{ form.name }}
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-6">
+            <!-- Quantity Field -->
+            <div class="col-md-6 form-group">
+              <label for="{{ form.quantity.id_for_label }}">Quantity</label>
               {{ form.quantity }}
+              {% if form.quantity.errors %}
+                <div class="text-danger">{{ form.quantity.errors }}</div>
+              {% endif %}
             </div>
 
-            <div class="col-md-6">
+            <!-- Condition Field -->
+            <div class="col-md-6 form-group">
+              <label for="{{ form.condition.id_for_label }}">Condition</label>
               {{ form.condition }}
+              {% if form.condition.errors %}
+                <div class="text-danger">{{ form.condition.errors }}</div>
+              {% endif %}
             </div>
           </div>
 
-          <div class="row mt-2">
-            <div class="col-md-6">
+          <div class="row">
+            <!-- Brand Field -->
+            <div class="col-md-6 form-group">
+              <label for="{{ form.brand.id_for_label }}">Brand</label>
               {{ form.brand }}
+              {% if form.brand.errors %}
+                <div class="text-danger">{{ form.brand.errors }}</div>
+              {% endif %}
             </div>
 
-            <div class="col-md-6">
+            <!-- Purchase Date Field -->
+            <div class="col-md-6 form-group">
+              <label for="{{ form.purchase_date.id_for_label }}">Purchase Date</label>
               {{ form.purchase_date }}
+              {% if form.purchase_date.errors %}
+                <div class="text-danger">{{ form.purchase_date.errors }}</div>
+              {% endif %}
             </div>
           </div>
 
-          <div class="row mt-2">
-            <div class="col-md-12">
-              {{ form.notes }}
-            </div>
+          <!-- Notes Field -->
+          <div class="form-group">
+            <label for="{{ form.notes.id_for_label }}">Notes</label>
+            {{ form.notes }}
+            {% if form.notes.errors %}
+              <div class="text-danger">{{ form.notes.errors }}</div>
+            {% endif %}
           </div>
 
-          <button type="submit" class="btn btn-primary mt-3">
-            Save Item
+          <button type="submit" class="btn btn-primary me-2">
+            {% if form.instance.pk %}Update{% else %}Save{% endif %} Item
           </button>
+          <a href="{% url 'godmode:inventory' %}" class="btn btn-light">Cancel</a>
 
         </form>
 
@@ -142,22 +176,64 @@
   </div>
 
   <!-- SIDE INFO -->
-  <div class="col-md-6 grid-margin stretch-card">
+  <div class="col-md-5 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
 
-        <h4 class="card-title">Inventory System</h4>
+        <h4 class="card-title">Inventory Management</h4>
 
-        <p class="text-muted">
-          Track gym equipment condition and availability.
-        </p>
+        <div class="mt-4">
+          <div class="alert alert-info">
+            <i class="mdi mdi-information-outline me-2"></i>
+            Track gym equipment condition and availability.
+          </div>
 
-        <ul>
-          <li>✔ Good / Faulty tracking</li>
-          <li>✔ Equipment quantity control</li>
-          <li>✔ Maintenance monitoring</li>
-          <li>✔ Asset management</li>
-        </ul>
+          <h6 class="mt-4">Features:</h6>
+          <ul class="list-arrow">
+            <li><i class="mdi mdi-check-circle text-success me-2"></i> Good / Faulty tracking</li>
+            <li><i class="mdi mdi-counter me-2 text-primary"></i> Equipment quantity control</li>
+            <li><i class="mdi mdi-tools text-warning me-2"></i> Maintenance monitoring</li>
+            <li><i class="mdi mdi-clipboard-text text-info me-2"></i> Asset management</li>
+          </ul>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="mt-4 pt-3 border-top">
+          <h6 class="mb-3">Quick Stats</h6>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">Total Items:</span>
+            <span class="fw-bold">{{ dashboard.total_items }}</span>
+          </div>
+          <div class="d-flex justify-content-between mt-2">
+            <span class="text-muted">Good Condition:</span>
+            <span class="fw-bold text-success">{{ dashboard.good_items }}</span>
+          </div>
+          <div class="d-flex justify-content-between mt-2">
+            <span class="text-muted">Under Maintenance:</span>
+            <span class="fw-bold text-warning">{{ dashboard.maintenance_items }}</span>
+          </div>
+          <div class="d-flex justify-content-between mt-2">
+            <span class="text-muted">Faulty:</span>
+            <span class="fw-bold text-danger">{{ dashboard.faulty_items }}</span>
+          </div>
+        </div>
+
+        <!-- Condition Guide -->
+        <div class="mt-4 pt-3 border-top">
+          <h6 class="mb-2">Condition Guide:</h6>
+          <div class="d-flex align-items-center mt-1">
+            <span class="badge bg-success me-2">Good</span>
+            <small class="text-muted">Working perfectly</small>
+          </div>
+          <div class="d-flex align-items-center mt-1">
+            <span class="badge bg-warning me-2">Maintenance</span>
+            <small class="text-muted">Needs repair/service</small>
+          </div>
+          <div class="d-flex align-items-center mt-1">
+            <span class="badge bg-danger me-2">Faulty</span>
+            <small class="text-muted">Broken / Not working</small>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -166,3 +242,15 @@
 </div>
 
 {% endblock body %}
+
+{% block injectjs %}
+<script>
+$(function() {
+  // Add any form-specific JS here if needed
+  // Example: Date picker for purchase_date
+  if ($('#id_purchase_date').length) {
+    $('#id_purchase_date').attr('type', 'date');
+  }
+});
+</script>
+{% endblock injectjs %}

@@ -1,0 +1,278 @@
+{% extends "GodMode/base.html" %}
+
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Update{% else %}Add{% endif %} Member{% endblock title %}
+
+{% load custom_filters %}
+
+{% block body %}
+
+<div class="row">
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.total_members }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Total</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-account-group icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Members</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.active_members }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Active</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-account-check icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Active Members</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.pending_members }}</h3>
+              <p class="text-warning ms-2 mb-0 font-weight-medium">Pending</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-warning">
+              <span class="mdi mdi-clock icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Pending Members</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.expired_members }}</h3>
+              <p class="text-danger ms-2 mb-0 font-weight-medium">Expired</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-danger">
+              <span class="mdi mdi-account-off icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Expired Members</h6>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-7 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">
+          {% if form.instance.pk %}Update{% else %}Add{% endif %} Membership
+          <small class='text-success ms-2 mb-0 font-weight-medium'>{{ form.instance.user.username|default:"" }}</small>
+        </h4>
+
+        <form method="POST" class="forms-sample">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="{{ form.user.id_for_label }}">User</label>
+              {{ form.user }}
+              {% if form.user.errors %}
+                <div class="text-danger">{{ form.user.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label for="{{ form.membership_plan.id_for_label }}">Membership Plan</label>
+              {{ form.membership_plan }}
+              {% if form.membership_plan.errors %}
+                <div class="text-danger">{{ form.membership_plan.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="{{ form.status.id_for_label }}">Status</label>
+              {{ form.status }}
+              {% if form.status.errors %}
+                <div class="text-danger">{{ form.status.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label for="{{ form.payment_method.id_for_label }}">Payment Method</label>
+              {{ form.payment_method }}
+              {% if form.payment_method.errors %}
+                <div class="text-danger">{{ form.payment_method.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="{{ form.end_date.id_for_label }}">End Date</label>
+              {{ form.end_date }}
+              {% if form.end_date.errors %}
+                <div class="text-danger">{{ form.end_date.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label for="{{ form.last_payment_date.id_for_label }}">Last Payment Date</label>
+              {{ form.last_payment_date }}
+              {% if form.last_payment_date.errors %}
+                <div class="text-danger">{{ form.last_payment_date.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary me-2">
+            {% if form.instance.pk %}Update{% else %}Save{% endif %} Member
+          </button>
+          <a href="{% url 'godmode:membership_list' %}" class="btn btn-light">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Membership Overview</h4>
+
+        <div class="position-relative">
+          <div style="position:relative; height:200px; width:100%;">
+            <canvas id="membershipDonutChart"></canvas>
+          </div>
+          <div class="text-center mt-2">
+            <h5 class="mb-0">{{ dashboard.total_members }}</h5>
+            <p class="text-muted">Total Members</p>
+          </div>
+        </div>
+
+        <!-- Membership Plan Distribution -->
+        <div class="mt-4 pt-3 border-top">
+          <h6 class="mb-3">Plan Distribution</h6>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">Rookie:</span>
+            <span class="fw-bold">{{ dashboard.rookie_count }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">Warrior:</span>
+            <span class="fw-bold">{{ dashboard.warrior_count }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">Elite:</span>
+            <span class="fw-bold">{{ dashboard.elite_count }}</span>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="mt-4 pt-3 border-top">
+          <h6 class="mb-3">Quick Stats</h6>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted">Active Rate:</span>
+            <span class="fw-bold">{{ dashboard.active_rate }}%</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">Expiring Soon:</span>
+            <span class="fw-bold text-warning">{{ dashboard.expiring_soon }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock body %}
+
+{% block injectjs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(function() {
+  'use strict';
+
+  // Donut Chart for Membership Distribution
+  var donutCtx = document.getElementById('membershipDonutChart');
+  if (donutCtx) {
+    new Chart(donutCtx.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: {{ plan_labels|safe }},
+        datasets: [{
+          data: {{ plan_data|safe }},
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(255, 99, 132, 0.6)'
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 10,
+              usePointStyle: true
+            }
+          }
+        },
+        cutout: '60%'
+      }
+    });
+  }
+
+  // Set date inputs
+  if ($('#id_end_date').length) {
+    $('#id_end_date').attr('type', 'date');
+  }
+  if ($('#id_last_payment_date').length) {
+    $('#id_last_payment_date').attr('type', 'datetime-local');
+  }
+});
+</script>
+{% endblock injectjs %}

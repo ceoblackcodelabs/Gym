@@ -105,7 +105,7 @@
   <div class="col-lg-6 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">Daily Check-ins (Last 30 Days)</h4>
+        <h4 class="card-title">Daily Check-ins (Last 7 Days)</h4>
         <div style="position:relative; height:230px; width:100%;">
           <canvas id="checkinChart"></canvas>
         </div>
@@ -318,7 +318,7 @@ $(function() {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-          duration: 0 // Disable animation to prevent expansion
+          duration: 0
         },
         scales: {
           y: {
@@ -370,7 +370,7 @@ $(function() {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-          duration: 0 // Disable animation to prevent expansion
+          duration: 0
         },
         plugins: {
           legend: {
@@ -381,7 +381,7 @@ $(function() {
     });
   }
 
-  // Daily Check-ins Chart (Line Chart)
+  // Daily Check-ins Chart (Line Chart) - Last 7 Days
   var checkinCtx = document.getElementById('checkinChart');
   if (checkinCtx) {
     destroyChart('checkin');
@@ -403,7 +403,7 @@ $(function() {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-          duration: 0 // Disable animation to prevent expansion
+          duration: 0
         },
         scales: {
           y: {
@@ -425,7 +425,7 @@ $(function() {
         },
         elements: {
           point: {
-            radius: 0
+            radius: 3
           }
         }
       }

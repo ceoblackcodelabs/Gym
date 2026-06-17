@@ -2,7 +2,9 @@
 
 {% load static %}
 
-{% block title %}Add Expense{% endblock title %}
+{% block title %}{% if form.instance.pk %}Update{% else %}Add{% endif %} Expense{% endblock title %}
+
+{% load custom_filters %}
 
 {% block body %}
 
@@ -13,133 +15,253 @@
         <div class="row">
           <div class="col-9">
             <div class="d-flex align-items-center align-self-start">
-              <h3 class="mb-0">Ksh {{ dashboard.cash_at_hand }}</h3>
-              <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="icon icon-box-success ">
-              <span class="mdi mdi-arrow-top-right icon-item"></span>
-            </div>
-          </div>
-        </div>
-        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-9">
-            <div class="d-flex align-items-center align-self-start">
-              <h3 class="mb-0">Ksh {{ dashboard.cash_at_bank }}</h3>
-              <p class="text-success ms-2 mb-0 font-weight-medium">+11%</p>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="icon icon-box-success">
-              <span class="mdi mdi-arrow-top-right icon-item"></span>
-            </div>
-          </div>
-        </div>
-        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-9">
-            <div class="d-flex align-items-center align-self-start">
-              <h3 class="mb-0">Ksh {{ dashboard.expenses }}</h3>
-              <p class="text-danger ms-2 mb-0 font-weight-medium">-2.4%</p>
+              <h3 class="mb-0">Ksh {{ dashboard.total_expenses }}</h3>
+              <p class="text-danger ms-2 mb-0 font-weight-medium">Total</p>
             </div>
           </div>
           <div class="col-3">
             <div class="icon icon-box-danger">
-              <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+              <span class="mdi mdi-cash-minus icon-item"></span>
             </div>
           </div>
         </div>
-        <h6 class="text-muted font-weight-normal">Expenses</h6>
+        <h6 class="text-muted font-weight-normal">Total Expenses</h6>
       </div>
     </div>
   </div>
+
   <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
         <div class="row">
           <div class="col-9">
             <div class="d-flex align-items-center align-self-start">
-              <h3 class="mb-0">Ksh {{ dashboard.total_sales }}</h3>
-              <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
+              <h3 class="mb-0">Ksh {{ dashboard.monthly_expenses }}</h3>
+              <p class="text-warning ms-2 mb-0 font-weight-medium">Monthly</p>
             </div>
           </div>
           <div class="col-3">
-            <div class="icon icon-box-success ">
-              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            <div class="icon icon-box-warning">
+              <span class="mdi mdi-calendar-month icon-item"></span>
             </div>
           </div>
         </div>
-        <h6 class="text-muted font-weight-normal">Total Sales</h6>
+        <h6 class="text-muted font-weight-normal">This Month</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">Ksh {{ dashboard.avg_expense }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Average</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-chart-line icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Average Expense</h6>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">{{ dashboard.expense_count }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">Records</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-file-document-box icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Records</h6>
       </div>
     </div>
   </div>
 </div>
 
 <div class="row">
-    <div class="col-md-6 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Add Expenses <small class='text-success ms-2 mb-0 font-weight-medium'>{{ product.name }}</small></h4>
-          <form method="POST">
-            {% csrf_token %}
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group row">
-                  <div class="col-sm-12">
-                    {{ form.name }}
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group row">
-                  <div class="col-sm-12">
-                    {{ form.price }}
-                  </div>
-                </div>
-              </div>
+  <div class="col-md-7 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">
+          {% if form.instance.pk %}Update{% else %}Add{% endif %} Expense
+          <small class='text-success ms-2 mb-0 font-weight-medium'>{{ form.instance.name|default:"" }}</small>
+        </h4>
+
+        <form method="POST" class="forms-sample">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="{{ form.name.id_for_label }}">Expense Name</label>
+              {{ form.name }}
+              {% if form.name.errors %}
+                <div class="text-danger">{{ form.name.errors }}</div>
+              {% endif %}
             </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group row">
-                  <div class="col-sm-12">
-                    {{ form.description }}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary me-2">Submit</button>
-          </form>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Daily Expense Vs Sales</h4>
-            <div class="position-relative">
-              <div class="daoughnutchart-wrapper">
-                <canvas id="transaction-history" class="transaction-chart"></canvas>
-              </div>
-              <div class="custom-value">$1200 <span>Total</span>
-              </div>
+
+            <div class="col-md-6 form-group">
+              <label for="{{ form.price.id_for_label }}">Amount (Ksh)</label>
+              {{ form.price }}
+              {% if form.price.errors %}
+                <div class="text-danger">{{ form.price.errors }}</div>
+              {% endif %}
             </div>
           </div>
-        </div>
+
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <label for="{{ form.description.id_for_label }}">Description</label>
+              {{ form.description }}
+              {% if form.description.errors %}
+                <div class="text-danger">{{ form.description.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <label for="{{ form.date.id_for_label }}">Date</label>
+              {{ form.date }}
+              {% if form.date.errors %}
+                <div class="text-danger">{{ form.date.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary me-2">
+            {% if form.instance.pk %}Update{% else %}Save{% endif %} Expense
+          </button>
+          <a href="{% url 'godmode:expenses' %}" class="btn btn-light">Cancel</a>
+        </form>
+      </div>
     </div>
+  </div>
+
+  <div class="col-md-5 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Expense Overview</h4>
+
+        <div class="position-relative">
+          <div style="position:relative; height:200px; width:100%;">
+            <canvas id="expenseDonutChart"></canvas>
+          </div>
+          <div class="text-center mt-2">
+            <h5 class="mb-0">Ksh {{ dashboard.total_expenses }}</h5>
+            <p class="text-muted">Total Expenses</p>
+          </div>
+        </div>
+
+        <!-- Expense Categories -->
+        <div class="mt-4 pt-3 border-top">
+          <h6 class="mb-3">Top Expense Categories</h6>
+          {% for category in dashboard.top_categories %}
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">{{ category.name }}:</span>
+            <span class="fw-bold">Ksh {{ category.total }}</span>
+          </div>
+          {% empty %}
+          <div class="text-muted text-center">No expense data available</div>
+          {% endfor %}
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="mt-4 pt-3 border-top">
+          <h6 class="mb-3">Quick Stats</h6>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted">Highest Expense:</span>
+            <span class="fw-bold text-danger">Ksh {{ dashboard.highest_expense }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">This Week:</span>
+            <span class="fw-bold">Ksh {{ dashboard.weekly_expenses }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+            <span class="text-muted">vs Last Month:</span>
+            <span class="fw-bold {% if dashboard.monthly_change > 0 %}text-danger{% else %}text-success{% endif %}">
+              {% if dashboard.monthly_change > 0 %}+{% endif %}{{ dashboard.monthly_change }}%
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock body %}
+
+{% block injectjs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(function() {
+  'use strict';
+
+  // Donut Chart for Expense Distribution by Category
+  var donutCtx = document.getElementById('expenseDonutChart');
+  if (donutCtx) {
+    new Chart(donutCtx.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: {{ expense_category_labels|safe }},
+        datasets: [{
+          data: {{ expense_category_data|safe }},
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 10,
+              usePointStyle: true
+            }
+          }
+        },
+        cutout: '60%'
+      }
+    });
+  }
+
+  // Set date input
+  if ($('#id_date').length) {
+    $('#id_date').attr('type', 'datetime-local');
+  }
+});
+</script>
+{% endblock injectjs %}
