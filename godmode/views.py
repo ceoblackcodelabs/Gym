@@ -1038,3 +1038,227 @@ class InventoryDeleteView(DeleteView):
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
+
+# gym card membership
+from django.views.generic import DetailView
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.http import JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
+
+from . import forms
+from .utils import generate_membership_qr, generate_member_checkin_qr
+class QRCheckinView(LoginRequiredMixin, ListView):
+    """QR Code Check-in List View with Dashboard"""
+    model = HomeModels.GymMembership
+    template_name = 'GodMode/qrs.html'
+    context_object_name = 'memberships'
+
+    def get_queryset(self):
+        return HomeModels.GymMembership.objects.select_related('user').all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Dashboard stats
+        context['dashboard'] = {
+            'total_members': HomeModels.GymMembership.objects.count(),
+            'active_members': HomeModels.GymMembership.objects.filter(status='active').count(),
+            'pending_members': HomeModels.GymMembership.objects.filter(status='pending').count(),
+            'expired_members': HomeModels.GymMembership.objects.filter(status='expired').count(),
+        }
+
+        # Plan distribution
+        context['dashboard']['rookie_count'] = HomeModels.GymMembership.objects.filter(membership_plan='rookie').count()
+        context['dashboard']['warrior_count'] = HomeModels.GymMembership.objects.filter(membership_plan='warrior').count()
+        context['dashboard']['elite_count'] = HomeModels.GymMembership.objects.filter(membership_plan='elite').count()
+
+        # Active rate
+        total = context['dashboard']['total_members']
+        active = context['dashboard']['active_members']
+        context['dashboard']['active_rate'] = round((active / total * 100) if total > 0 else 0)
+
+        # Expiring soon (within 7 days)
+        expiring_soon = HomeModels.GymMembership.objects.filter(
+            status='active',
+            end_date__lte=timezone.now() + timezone.timedelta(days=7),
+            end_date__gte=timezone.now()
+        ).count()
+        context['dashboard']['expiring_soon'] = expiring_soon
+
+        # Plan distribution for chart
+        plan_labels = ['Rookie', 'Warrior', 'Elite']
+        plan_data = [
+            context['dashboard']['rookie_count'],
+            context['dashboard']['warrior_count'],
+            context['dashboard']['elite_count']
+        ]
+        context['plan_labels'] = json.dumps(plan_labels)
+        context['plan_data'] = json.dumps(plan_data)
+
+        # Monthly data for line chart
+        membership_labels = []
+        active_data = []
+        inactive_data = []
+
+        current_year = timezone.now().year
+
+        for month in range(1, 13):
+            month_start = timezone.datetime(current_year, month, 1)
+            if month == 12:
+                month_end = timezone.datetime(current_year + 1, 1, 1)
+            else:
+                month_end = timezone.datetime(current_year, month + 1, 1)
+
+            active_count = HomeModels.GymMembership.objects.filter(
+                status='active',
+                start_date__lte=month_end,
+                end_date__gte=month_start
+            ).count()
+
+            inactive_count = HomeModels.GymMembership.objects.filter(
+                status__in=['cancelled', 'expired'],
+                end_date__gte=month_start,
+                end_date__lte=month_end
+            ).count()
+
+            membership_labels.append(calendar.month_abbr[month])
+            active_data.append(active_count)
+            inactive_data.append(inactive_count)
+
+        context['membership_labels'] = json.dumps(membership_labels)
+        context['active_data'] = json.dumps(active_data)
+        context['inactive_data'] = json.dumps(inactive_data)
+
+        return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class MembershipDetailView(LoginRequiredMixin, DetailView):
+    """Membership Detail View with QR Code"""
+    model = HomeModels.GymMembership
+    template_name = 'GodMode/membership_detail.html'
+    context_object_name = 'membership'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        membership = self.get_object()
+
+        # Generate QR code for this membership
+        context['qr_code'] = generate_membership_qr(self.request, membership.id)
+
+        # Get check-in QR code with user info
+        context['checkin_qr'] = generate_member_checkin_qr(
+            self.request,
+            membership.id,
+            membership.user.id
+        )
+
+        # Calculate days remaining
+        if membership.end_date:
+            days_remaining = (membership.end_date - timezone.now()).days
+            context['days_remaining'] = days_remaining
+            context['is_expiring_soon'] = days_remaining <= 7
+
+        # Get user details
+        context['user'] = membership.user
+        context['profile'] = membership.user.profile if hasattr(membership.user, 'profile') else None
+
+        # Get workout stats
+        from home.models import WorkoutLog, PointsTransaction
+        context['workout_count'] = WorkoutLog.objects.filter(user=membership.user).count()
+        context['total_points'] = PointsTransaction.objects.filter(user=membership.user).aggregate(Sum('points'))['points__sum'] or 0
+
+        # Get recent workouts
+        context['recent_workouts'] = WorkoutLog.objects.filter(user=membership.user).order_by('-date')[:5]
+
+        return context
+
+
+# @method_decorator(staff_member_required, name='dispatch')
+# class MembershipUpdateView(LoginRequiredMixin, UpdateView):
+#     """Update Membership - QR Code regeneration occurs here"""
+#     model = HomeModels.GymMembership
+#     form_class = forms.GymMembershipForm
+#     template_name = 'GodMode/membership_update.html'
+
+#     def get_success_url(self):
+#         return reverse_lazy('godmode:membership_detail', kwargs={'pk': self.object.pk})
+
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         messages.success(self.request, 'Membership updated successfully! QR code regenerated.')
+#         return response
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         membership = self.get_object()
+
+#         # Generate fresh QR code on update page
+#         context['qr_code'] = generate_membership_qr(self.request, membership.id)
+#         context['membership'] = membership
+
+#         return context
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class MembershipDeleteView(LoginRequiredMixin, DeleteView):
+    """Delete Membership"""
+    model = HomeModels.GymMembership
+    template_name = 'GodMode/membership_confirm_delete.html'
+    success_url = reverse_lazy('godmode:membership_list')
+
+    def delete(self, request, *args, **kwargs):
+        membership = self.get_object()
+        user_name = membership.user.username
+        response = super().delete(request, *args, **kwargs)
+        messages.success(request, f'Membership for {user_name} has been deleted successfully!')
+        return response
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class MemberCheckinView(LoginRequiredMixin, DetailView):
+    """Handle QR code check-in"""
+
+    def get(self, request, membership_id, user_id):
+        try:
+            membership = get_object_or_404(HomeModels.GymMembership, id=membership_id, user_id=user_id)
+
+            # Update last check-in or log
+            # You can add a CheckInLog model here
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Check-in successful for {membership.user.username}!',
+                'member_name': membership.user.get_full_name() or membership.user.username,
+                'plan': membership.get_membership_plan_display(),
+                'status': membership.status,
+                'expires': membership.end_date.strftime('%Y-%m-%d') if membership.end_date else 'N/A'
+            })
+
+        except HomeModels.GymMembership.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'message': 'Invalid membership or user'
+            }, status=404)
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class MembershipQRView(LoginRequiredMixin, DetailView):
+    """View for QR code display only"""
+    model = HomeModels.GymMembership
+    template_name = 'GodMode/membership_qr.html'
+    context_object_name = 'membership'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        membership = self.get_object()
+        context['qr_code'] = generate_membership_qr(self.request, membership.id)
+        context['checkin_qr'] = generate_member_checkin_qr(
+            self.request,
+            membership.id,
+            membership.user.id
+        )
+        return context

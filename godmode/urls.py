@@ -36,4 +36,19 @@ urlpatterns = [
     path('inventory/create/', InventoryCreateView.as_view(), name='inventory_create'),
     path('inventory/<int:pk>/update/', InventoryUpdateView.as_view(), name='inventory_update'),
     path('inventory/<int:pk>/delete/', InventoryDeleteView.as_view(), name='inventory_delete'),
+
+    # qrs
+    path("qrs/", QRCheckinView.as_view(), name="qrs_checkin"),
+
+    # Membership Detail with QR
+    path('membership/<int:pk>/', MembershipDetailView.as_view(), name='membership_detail'),
+
+    # Membership Delete
+    path('membership/<int:pk>/delete/', MembershipDeleteView.as_view(), name='membership_delete'),
+
+    # QR Code only view
+    path('membership/<int:pk>/qr/', MembershipQRView.as_view(), name='membership_qr'),
+
+    # Check-in endpoint (called when QR is scanned)
+    path('checkin/<int:membership_id>/<int:user_id>/', MemberCheckinView.as_view(), name='member_checkin'),
 ]

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-w3d%lvzip4h4vrghpwr7qm-_v8em3tvglviocletsi2yw7%gat
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -141,3 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ADMIN_EMAIL = 'admin@atomicgym.com'
 DEFAULT_FROM_EMAIL = 'noreply@atomicgym.com'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://929e-217-199-148-239.ngrok-free.app"
+]

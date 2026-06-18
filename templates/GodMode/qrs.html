@@ -1,0 +1,329 @@
+{% extends 'GodMode/base.html' %}
+
+{% block title %}Current Membership{% endblock title %}
+
+{% load custom_filters %}
+
+{% block body %}
+
+<div class="row">
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">Ksh {{ dashboard.cash_at_hand }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success ">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Cash at Hand</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">Ksh {{ dashboard.cash_at_bank }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+11%</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Cash At Bank</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">Ksh {{ dashboard.expenses }}</h3>
+              <p class="text-danger ms-2 mb-0 font-weight-medium">-2.4%</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-danger">
+              <span class="mdi mdi-arrow-bottom-left icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Expenses</h6>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9">
+            <div class="d-flex align-items-center align-self-start">
+              <h3 class="mb-0">Ksh {{ dashboard.total_sales }}</h3>
+              <p class="text-success ms-2 mb-0 font-weight-medium">+3.5%</p>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="icon icon-box-success ">
+              <span class="mdi mdi-arrow-top-right icon-item"></span>
+            </div>
+          </div>
+        </div>
+        <h6 class="text-muted font-weight-normal">Total Sales</h6>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Active vs Inactive Membership (Line Chart)</h4>
+        <div style="position:relative; height:250px; width:100%;">
+          <canvas id="membershipLineChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Membership Plan Distribution (Bar Chart)</h4>
+        <div style="position:relative; height:230px; width:100%;">
+          <canvas id="membershipBarChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row ">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Current Membership <a class="btn btn-primary" href="{% url 'godmode:membership_create' %}">Add</a> </h4>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>
+                    <div class="form-check form-check-muted m-0">
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" id="check-all">
+                      </label>
+                    </div>
+                  </th>
+                  <th>User</th>
+                  <th>Plan</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for membership in memberships %}
+                <tr>
+                  <td>
+                    <div class="form-check form-check-muted m-0">
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input">
+                      </label>
+                    </div>
+                  </td>
+                  <td>{{ membership.user }}</td>
+                  <td>{{ membership.get_membership_plan_display }}</td>
+                  <td>{{ membership.start_date|date:"d M Y" }}</td>
+                  <td>{{ membership.end_date|date:"d M Y" }}</td>
+                  <td>
+                    {% if membership.status == 'active' %}
+                      <span class="badge badge-success">Active</span>
+                    {% elif membership.status == 'pending' %}
+                      <span class="badge badge-warning">Pending</span>
+                    {% elif membership.status == 'cancelled' %}
+                      <span class="badge badge-danger">Cancelled</span>
+                    {% elif membership.status == 'expired' %}
+                      <span class="badge badge-secondary">Expired</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a class="btn btn-primary me-2" href="{% url 'godmode:membership_detail' membership.pk %}">
+                        View QR
+                    </a>
+                    <form method="post"
+                        action="{% url 'godmode:membership_delete' membership.pk %}"
+                        style="display:inline;"
+                        onsubmit="return confirm('Delete this membership?');">
+                        {% csrf_token %}
+                        <button class="btn btn-danger me-2" type="submit">
+                            Generate
+                        </button>
+                    </form>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center">No memberships found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock body %}
+
+{% block injectjs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(function() {
+  'use strict';
+
+  // Store chart instances
+  var chartInstances = {};
+
+  // Destroy existing chart if it exists
+  function destroyChart(chartId) {
+    if (chartInstances[chartId]) {
+      chartInstances[chartId].destroy();
+      delete chartInstances[chartId];
+    }
+  }
+
+  let membership_labels = {{ membership_labels|safe }};
+  let active_data = {{ active_data|safe }};
+  let inactive_data = {{ inactive_data|safe }};
+  let plan_labels = {{ plan_labels|safe }};
+  let plan_data = {{ plan_data|safe }};
+
+  // Line Chart - Active vs Inactive Membership
+  var lineCtx = document.getElementById('membershipLineChart');
+  if (lineCtx) {
+    destroyChart('membershipLine');
+    chartInstances['membershipLine'] = new Chart(lineCtx.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: membership_labels,
+        datasets: [
+          {
+            label: 'Active Members',
+            data: active_data,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2
+          },
+          {
+            label: 'Inactive Members',
+            data: inactive_data,
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 0
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: "rgba(204, 204, 204, 0.1)"
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        }
+      }
+    });
+  }
+
+  // Bar Chart - Membership Plan Distribution
+  var barCtx = document.getElementById('membershipBarChart');
+  if (barCtx) {
+    destroyChart('membershipBar');
+    chartInstances['membershipBar'] = new Chart(barCtx.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: plan_labels,
+        datasets: [{
+          label: 'Members by Plan',
+          data: plan_data,
+          backgroundColor: [
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(255, 99, 132, 0.6)'
+          ],
+          borderColor: [
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 0
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: "rgba(204, 204, 204, 0.1)"
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock injectjs %}

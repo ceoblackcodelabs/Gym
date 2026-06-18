@@ -70,3 +70,5 @@ class CheckMemberExistsAPIView(View):
         if email and User.objects.filter(email=email).exists():
             return JsonResponse({'exists': True, 'message': 'Email already registered'})
         return JsonResponse({'exists': False})
+
+
